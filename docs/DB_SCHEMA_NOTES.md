@@ -104,13 +104,37 @@ datasource db {
 
 This caused a failed migration attempt during initial setup — keep this in mind when upgrading or troubleshooting.
 
+**Second Prisma 7 breaking change (discovered 2026-05-26):**
+
+`prisma-client-js` in Prisma 7 uses a new client engine that requires a Driver Adapter — `new PrismaClient()` without an adapter throws `PrismaClientConstructorValidationError`.
+
+For SQLite, the solution is `@prisma/adapter-better-sqlite3`:
+
+```js
+const { PrismaClient } = require('@prisma/client');
+const { PrismaBetterSqlite3 } = require('@prisma/adapter-better-sqlite3');
+const path = require('path');
+
+const dbPath = path.resolve(__dirname, '../../../database/dev.db');
+const adapter = new PrismaBetterSqlite3({ url: 'file:' + dbPath });
+const prisma = new PrismaClient({ adapter });
+```
+
+The URL must use an **absolute path** (resolved via `path.resolve`), not a relative path. The `file:` prefix is required.
+
 ---
 
 ## Migration History
 
-| Migration Name       | Date       | Description                  |
-|----------------------|------------|------------------------------|
-| 20260525_init        | 2026-05-25 | Initial schema: User, Club, Membership |
+| Migration Name                                                 | Date       | Description                                    |
+|----------------------------------------------------------------|------------|------------------------------------------------|
+| 20260525_init                                                  | 2026-05-25 | Initial schema: User, Club, Membership         |
+| 20260526_add_location_interests_visibility_to_club             | 2026-05-26 | Added location, interests, visibility to Club  |
+
+**Migration 2 notes:**
+- `location` — optional string; city/place or "Online"
+- `interests` — optional string; comma-separated tags e.g. `"photography,travel"`. Stored as a string (not JSON) for SQLite simplicity. Split/join at the application layer.
+- `visibility` — string with default `"public"`. Only `"public"` clubs are returned by `GET /api/clubs`. `"private"` clubs are reserved for future invite-only flows.
 
 ---
 

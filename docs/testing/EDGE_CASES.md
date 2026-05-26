@@ -14,8 +14,8 @@
 
 | Scenario                             | Expected behavior              | Status  |
 |--------------------------------------|--------------------------------|---------|
-| Club name is empty string `""`       | 400 — name is required         | 📋      |
-| Club name is only spaces `"   "`     | 400 — name is required (after trim) | 📋  |
+| Club name is empty string `""`       | 400 — name is required         | ✅      |
+| Club name is only spaces `"   "`     | 400 — name is required (after trim) | ✅  |
 | User name is a single character      | 400 — min 2 chars              | 📋      |
 | Password is only whitespace          | 400 — password is required     | 📋      |
 | Email is empty string                | 400 — email is required        | 📋      |
@@ -48,11 +48,11 @@
 
 | Scenario                                | Expected behavior              | Status |
 |-----------------------------------------|--------------------------------|--------|
-| Club name exactly 3 chars (min valid)   | 201 — success                  | 📋     |
-| Club name exactly 100 chars (max valid) | 201 — success                  | 📋     |
-| Club name is 101 chars                  | 400 — too long                 | 📋     |
-| Description is exactly 500 chars        | 201 — success                  | 📋     |
-| Description is 501 chars                | 400 — too long                 | 📋     |
+| Club name exactly 3 chars (min valid)   | 201 — success                  | ✅     |
+| Club name exactly 100 chars (max valid) | 201 — success                  | ✅     |
+| Club name is 101 chars                  | 400 — too long                 | ✅     |
+| Description is exactly 500 chars        | 201 — success                  | ✅     |
+| Description is 501 chars                | 400 — too long                 | ✅     |
 
 ---
 
@@ -60,9 +60,9 @@
 
 | Scenario                                     | Expected behavior                  | Status |
 |----------------------------------------------|------------------------------------|--------|
-| Request to protected route with no token     | 401 — unauthorized                 | 📋     |
-| Request with expired JWT token               | 401 — token expired                | 📋     |
-| Request with a malformed/fake token          | 401 — invalid token                | 📋     |
+| Request to protected route with no token     | 401 — unauthorized                 | ✅     |
+| Request with expired JWT token               | 401 — token expired                | ✅     |
+| Request with a malformed/fake token          | 401 — invalid token                | ✅     |
 | Token for a user ID that no longer exists    | 401 or 404 — handle gracefully     | 📋     |
 | User tries to edit another user's profile    | 403 — forbidden                    | 📋     |
 | User tries to delete a club they don't own   | 403 — forbidden                    | 📋     |
@@ -75,7 +75,7 @@
 |--------------------------------------------------|--------------------------------|--------|
 | View a club with ID that doesn't exist           | 404 — club not found           | 📋     |
 | View a club with a non-numeric ID (`/clubs/abc`) | 400 — invalid ID               | 📋     |
-| Create a club while not logged in                | 401 — unauthorized             | 📋     |
+| Create a club while not logged in                | 401 — unauthorized             | ✅     |
 | Owner tries to leave their own club              | Handled (transfer or block)    | 📋     |
 
 ---

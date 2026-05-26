@@ -22,24 +22,25 @@
 ## MVP Features
 
 ### Authentication
-| Feature              | Status | Notes                          |
-|----------------------|--------|--------------------------------|
-| User registration    | 📋     | POST /api/auth/register        |
-| User login           | 📋     | POST /api/auth/login           |
-| JWT token issuance   | 📋     | Stored in localStorage         |
-| Protected routes     | 📋     | Frontend + backend guards      |
-| Logout               | 📋     | Clear token client-side        |
+| Feature              | Status | Notes                                        |
+|----------------------|--------|----------------------------------------------|
+| User registration    | ✅     | POST /api/auth/register — bcrypt + JWT       |
+| User login           | ✅     | POST /api/auth/login — credential check      |
+| JWT token issuance   | ✅     | 7-day token, stored in localStorage          |
+| Auth middleware      | ✅     | `requireAuth` on protected backend routes    |
+| Protected routes     | ✅     | Frontend redirect to /login if no token      |
+| Logout               | ✅     | Clear token + user from localStorage         |
 
 ### Clubs
-| Feature              | Status | Notes                          |
-|----------------------|--------|--------------------------------|
-| List all clubs       | 📋     | GET /api/clubs                 |
-| View club details    | 📋     | GET /api/clubs/:id             |
-| Create a club        | 📋     | POST /api/clubs (auth required) |
-| Edit a club          | 📋     | PATCH /api/clubs/:id (owner only) |
-| Delete a club        | 📋     | DELETE /api/clubs/:id (owner only) |
-| Join a club          | 📋     | POST /api/clubs/:id/join       |
-| Leave a club         | 📋     | DELETE /api/clubs/:id/leave    |
+| Feature              | Status | Notes                                        |
+|----------------------|--------|----------------------------------------------|
+| List all clubs       | ✅     | GET /api/clubs — public clubs, newest first  |
+| Create a club        | ✅     | POST /api/clubs — auth required, full fields |
+| View club details    | 📋     | GET /api/clubs/:id — stub exists             |
+| Edit a club          | 📋     | PATCH /api/clubs/:id (owner only)            |
+| Delete a club        | 📋     | DELETE /api/clubs/:id (owner only)           |
+| Join a club          | 📋     | POST /api/clubs/:id/join                     |
+| Leave a club         | 📋     | DELETE /api/clubs/:id/leave                  |
 
 ### User Profile
 | Feature              | Status | Notes                          |
@@ -49,11 +50,13 @@
 | View joined clubs    | 📋     | Derived from Membership table  |
 
 ### Navigation & UI
-| Feature              | Status | Notes                          |
-|----------------------|--------|--------------------------------|
-| Navbar               | ✅     | Links to all main routes       |
-| Landing page         | ✅     | Scaffold with CTA              |
-| All page routes      | ✅     | React Router wired up          |
+| Feature              | Status | Notes                                        |
+|----------------------|--------|----------------------------------------------|
+| Navbar               | ✅     | Auth-aware — shows logout/username when in   |
+| Landing page         | ✅     | CTA to register or explore                   |
+| All page routes      | ✅     | React Router wired up                        |
+| Explore Clubs page   | ✅     | Fetches real clubs, grid layout, loading/error states |
+| Create Club page     | ✅     | Full form with tag input, validation, redirect |
 
 ---
 

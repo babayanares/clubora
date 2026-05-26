@@ -1,13 +1,7 @@
 const router = require('express').Router();
+const { register, login } = require('../controllers/auth');
 
-// POST /api/auth/register
-router.post('/register', (req, res) => {
-  res.json({ message: 'Register endpoint — not yet implemented' });
-});
-
-// POST /api/auth/login
-router.post('/login', (req, res) => {
-  res.json({ message: 'Login endpoint — not yet implemented' });
-});
+router.post('/register', register);
+router.post('/login', login);
 
 module.exports = router;

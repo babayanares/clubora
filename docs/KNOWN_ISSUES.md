@@ -10,11 +10,11 @@
 
 ## Status Legend
 
-| Symbol | Meaning          |
-|--------|------------------|
-| 🐛     | Open bug         |
-| ⚠️     | Known limitation |
-| ✅     | Resolved         |
+| Symbol | Meaning             |
+|--------|---------------------|
+| 🐛     | Open bug            |
+| ⚠️     | Known limitation    |
+| ✅     | Resolved            |
 | 🔍     | Under investigation |
 
 ---
@@ -23,44 +23,51 @@
 
 ### Backend
 
-| ID    | Status | Description                                                  | Impact  |
-|-------|--------|--------------------------------------------------------------|---------|
-| BE-01 | ⚠️     | Auth routes are stubbed — no real login/register logic yet   | High    |
-| BE-02 | ⚠️     | No input validation on any route yet                         | High    |
-| BE-03 | ⚠️     | No authentication middleware — all routes are public         | High    |
-| BE-04 | ⚠️     | Passwords are not hashed (bcrypt not yet installed)          | Critical |
-| BE-05 | ⚠️     | No error handling middleware — unhandled errors crash server  | Medium  |
+| ID    | Status | Description                                                        | Impact       |
+|-------|--------|--------------------------------------------------------------------|--------------|
+| BE-05 | ⚠️     | Club Details route (`GET /api/clubs/:id`) stub not fully wired     | Low (not yet linked in UI) |
 
 ### Frontend
 
-| ID    | Status | Description                                                  | Impact  |
-|-------|--------|--------------------------------------------------------------|---------|
-| FE-01 | ⚠️     | Forms submit but don't call real API yet (console.log only)  | High    |
-| FE-02 | ⚠️     | No loading states or error messages shown to user            | Medium  |
-| FE-03 | ⚠️     | No protected routes — dashboard accessible without login     | High    |
-| FE-04 | ⚠️     | Navbar shows all links regardless of auth state              | Low     |
+| ID    | Status | Description                                                        | Impact       |
+|-------|--------|--------------------------------------------------------------------|--------------|
+| FE-03 | ⚠️     | Dashboard and Profile pages are still stubs — no real content yet  | Low (not linked in nav for logged-out users) |
 
 ### Database
 
-| ID    | Status | Description                                                  | Impact  |
-|-------|--------|--------------------------------------------------------------|---------|
-| DB-01 | ⚠️     | SQLite not suitable for production / concurrent users        | Low (MVP only) |
+| ID    | Status | Description                                                        | Impact       |
+|-------|--------|--------------------------------------------------------------------|--------------|
+| DB-01 | ⚠️     | SQLite not suitable for production / concurrent users              | Low (MVP only) |
 
 ---
 
 ## Resolved Issues
 
-| ID    | Status | Description                                         | Resolved |
-|-------|--------|-----------------------------------------------------|----------|
-| DB-02 | ✅     | Prisma 7 `url` field in schema.prisma caused migration failure | 2026-05-25 |
+| ID    | Status | Description                                                              | Resolved   |
+|-------|--------|--------------------------------------------------------------------------|------------|
+| DB-02 | ✅     | Prisma 7 `url` field in schema.prisma caused migration failure           | 2026-05-25 |
+| DB-03 | ✅     | Prisma 7 requires Driver Adapter — plain `new PrismaClient()` errors     | 2026-05-26 |
+| BE-01 | ✅     | Auth routes were stubbed — register, login, JWT now implemented          | 2026-05-26 |
+| BE-02 | ✅     | No input validation — all routes now validate required fields            | 2026-05-26 |
+| BE-03 | ✅     | No auth middleware — `requireAuth` middleware now protects POST /clubs   | 2026-05-26 |
+| BE-04 | ✅     | Passwords not hashed — bcrypt now used in register flow                  | 2026-05-26 |
+| BE-05 | ✅     | No global error handler — added to `src/index.js`                        | 2026-05-26 |
+| FE-01 | ✅     | Forms not wired to API — Login, Register, CreateClub now call real API   | 2026-05-26 |
+| FE-02 | ✅     | No loading/error states — all three forms now have them                  | 2026-05-26 |
+| FE-04 | ✅     | Navbar showed all links regardless of auth — now auth-aware              | 2026-05-26 |
 
 ---
 
-## Notes on Prioritization
+## Prisma 7 Notes (for future reference)
 
-For MVP, the critical path is:
-1. Fix BE-04 (password hashing) before any real user data is stored
-2. Fix BE-03 (auth middleware) before protecting any routes
-3. Fix FE-03 (protected routes) before shipping to anyone
+Two Prisma 7 breaking changes encountered during the Create Club implementation:
 
-BE-01 and FE-01 will resolve together when auth is implemented.
+1. **`url` removed from `schema.prisma`** — The datasource `url` field must be in `prisma.config.ts` only. Remove `url = env("DATABASE_URL")` from the schema block.
+
+2. **Driver Adapter required** — `prisma-client-js` in Prisma 7 uses a new client engine that requires a Driver Adapter. For SQLite, install `better-sqlite3` and `@prisma/adapter-better-sqlite3`, then pass the adapter to the constructor:
+   ```js
+   const { PrismaBetterSqlite3 } = require('@prisma/adapter-better-sqlite3');
+   const adapter = new PrismaBetterSqlite3({ url: 'file:/absolute/path/to/dev.db' });
+   const prisma = new PrismaClient({ adapter });
+   ```
+   The `url` must be an **absolute path** (not relative) prefixed with `file:`.

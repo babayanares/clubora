@@ -12,8 +12,10 @@
 
 **Route:** `/clubs/new`
 **API:** `POST /api/clubs`
-**Auth required:** Yes (JWT token)
-**DB action:** Creates a row in the `Club` table
+**Auth required:** Yes (JWT token in Authorization header)
+**DB action:** Creates a row in the `Club` table + a `Membership` row for the owner (role: admin)
+**Redirect on success:** `/explore`
+**Status:** ✅ Implemented 2026-05-26
 
 ---
 
@@ -26,22 +28,25 @@
 {
   "name": "Photography Club",
   "description": "A club for photographers of all levels.",
-  "category": "Creative"
+  "location": "New York, NY",
+  "interests": "photography,travel,outdoors",
+  "visibility": "public"
 }
 ```
-**Expected:** 201 response, club created in DB, redirect to `/clubs/:id`
+**Expected:** 201 response, club created in DB, redirect to `/explore`
 
 ---
 
-### P2 — Create club with name only
+### P2 — Create club with required fields only (name + one interest)
 
 **Input:**
 ```json
 {
-  "name": "Running Club"
+  "name": "Running Club",
+  "interests": "running"
 }
 ```
-**Expected:** 201 response, club created, description and category are null
+**Expected:** 201 response, club created, description/location/category are null, visibility defaults to "public"
 
 ---
 
@@ -209,14 +214,78 @@ cd backend && npx prisma studio
 
 ---
 
+## New Field Tests (2026-05-26)
+
+### NF1 — No interests → 400
+
+**Input:**
+```json
+{ "name": "Valid Name" }
+```
+**Expected:** 400 — At least one interest is required
+
+---
+
+### NF2 — Interests with whitespace — trimmed correctly
+
+**Input:**
+```json
+{ "name": "Valid Name", "interests": "  photography , travel , " }
+```
+**Expected:** 201 — interests stored as `"photography,travel"` (trimmed, empty entries removed)
+
+---
+
+### NF3 — Visibility: private
+
+**Input:**
+```json
+{ "name": "Secret Club", "interests": "private things", "visibility": "private" }
+```
+**Expected:** 201 — club created. Does NOT appear in `GET /api/clubs` (only public clubs returned).
+
+---
+
+### NF4 — Invalid visibility value → defaults to public
+
+**Input:**
+```json
+{ "name": "Valid Club", "interests": "test", "visibility": "hidden" }
+```
+**Expected:** 201 — visibility silently set to "public"
+
+---
+
+### NF5 — Frontend: adding interests via suggestion chips
+
+Open `/clubs/new`, click suggestion chips (Technology, Sports, etc.)
+**Expected:** Tags appear in the tag area, no duplicates, can be removed with ×
+
+---
+
+### NF6 — Frontend: adding interests via keyboard
+
+Type "photography" in the interest input, press Enter
+**Expected:** Tag added to list, input cleared
+
+---
+
+### NF7 — Frontend: no interests added → validation error
+
+Leave interests empty, click Create Club
+**Expected:** Field error "Add at least one interest", no API call made
+
+---
+
 ## Regression Considerations
 
 This feature touches:
 - JWT auth middleware (shared with all protected routes)
-- `Club` table (affects Explore Clubs page and Club Details page)
-- Membership table (if owner is auto-joined)
+- `Club` table (affects Explore Clubs page)
+- `Membership` table (owner auto-joined as admin)
 
 After any change to Create Club, also verify:
-- [ ] Explore Clubs still shows all clubs
-- [ ] Club Details page loads for the newly created club
+- [ ] Explore Clubs still shows newly created clubs
+- [ ] Member count on Explore Clubs card shows 1 for a freshly created club
 - [ ] Login/Register still works (auth middleware unchanged)
+- [ ] Private clubs do NOT appear on Explore Clubs page

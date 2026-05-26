@@ -97,29 +97,50 @@
 ## Valid Clubs
 
 ```json
-// Minimum required fields
+// Minimum required fields (name + at least one interest)
 {
-  "name": "Photography Club"
+  "name": "Photography Club",
+  "interests": "photography"
 }
 
 // Full valid club
 {
   "name": "Photography Club",
   "description": "A welcoming space for photographers of all skill levels.",
-  "category": "Creative"
+  "location": "New York, NY",
+  "interests": "photography,travel,outdoors",
+  "visibility": "public"
 }
 
-// Different categories
+// Different interests
 {
   "name": "Weekend Runners",
   "description": "Casual weekend running group. All paces welcome.",
-  "category": "Sports"
+  "location": "Central Park, NYC",
+  "interests": "running,fitness,outdoors",
+  "visibility": "public"
 }
 
 {
   "name": "Book Exchange",
   "description": "Monthly book swap and discussion.",
-  "category": "Learning"
+  "interests": "reading,literature",
+  "visibility": "public"
+}
+
+// Private club
+{
+  "name": "Inner Circle Investors",
+  "description": "Private investment discussion group.",
+  "interests": "investing,finance",
+  "visibility": "private"
+}
+
+// Online club (no location)
+{
+  "name": "Global Dev Community",
+  "interests": "programming,technology,opensource",
+  "visibility": "public"
 }
 ```
 
@@ -130,37 +151,55 @@
 ```json
 // Missing name
 {
-  "description": "A club with no name",
-  "category": "Mystery"
+  "interests": "photography",
+  "description": "A club with no name"
 }
 
 // Empty name
 {
   "name": "",
-  "description": "Empty name club"
+  "interests": "photography"
 }
 
 // Whitespace-only name
 {
   "name": "     ",
-  "description": "Whitespace name"
+  "interests": "photography"
 }
 
 // Name too short (under 3 chars)
 {
   "name": "AB",
-  "description": "Two char name"
+  "interests": "photography"
 }
 
 // Name too long (over 100 chars)
 {
   "name": "This club name is intentionally way too long and should be rejected by the validation layer of the API because it exceeds the maximum allowed length of one hundred characters",
-  "description": "Long name"
+  "interests": "test"
+}
+
+// Missing interests (required since 2026-05-26)
+{
+  "name": "Valid Name"
+}
+
+// Interests is empty string
+{
+  "name": "Valid Name",
+  "interests": ""
+}
+
+// Interests is only commas/whitespace
+{
+  "name": "Valid Name",
+  "interests": " , , "
 }
 
 // Description too long (over 500 chars)
 {
   "name": "Valid Name",
+  "interests": "test",
   "description": "This description is intentionally too long. It goes on and on and on, repeating itself over and over with filler text that does nothing except push the character count past the five hundred character maximum that the API is supposed to enforce. The validation layer should catch this and return a 400 error. This text continues to fill space and nothing more. Almost there now. And done."
 }
 ```

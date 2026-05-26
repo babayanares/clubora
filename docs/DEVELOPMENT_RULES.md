@@ -33,6 +33,88 @@ Every feature must have a matching doc in `/docs/features/` before it's marked d
 
 ---
 
+## Feature Request & Requirements Process
+
+Every feature must pass through this flow before a single line of implementation code is written:
+
+```
+Idea
+↓
+Feature Request       — what is it and why does it matter?
+↓
+Requirements Doc      — write or update the feature doc in /docs/features/
+↓
+Testing Considerations — define edge cases and QA notes upfront
+↓
+Implementation        — backend first, then frontend
+↓
+Validation            — manual test against the requirements doc
+↓
+Commit                — clear message, all checklist items passed
+```
+
+**Why this order matters:** Requirements written after the fact describe what was built, not what was needed. Writing them first surfaces gaps before they become bugs.
+
+---
+
+### Requirements Document Rules
+
+Every feature must have a matching document in `/docs/features/` that is written **before implementation starts** and updated if anything changes during implementation.
+
+Each requirements doc must define:
+
+- **Business purpose** — why does this feature exist? what user problem does it solve?
+- **User workflow** — step-by-step: what does the user do?
+- **Frontend responsibilities** — which page, what form fields, what states to handle
+- **Backend responsibilities** — which endpoint, what method, what it validates and returns
+- **DB interactions** — what gets created, updated, read, or deleted
+- **Validation rules** — what input is valid, what is rejected, and with what error
+- **Edge cases** — what can go wrong? what unusual inputs should be handled?
+- **QA / testing considerations** — happy path, error scenarios, regression risk
+
+If any of these sections are missing, the feature is not ready to implement.
+
+---
+
+### AI-Assisted Workflow Rules
+
+When using AI to implement a feature:
+
+- Share the relevant feature doc with the AI at the start of the session — don't rely on the AI inferring requirements from scratch.
+- Ask the AI to review the requirements doc and flag any gaps **before** writing code.
+- If the AI suggests something that isn't in the requirements, evaluate it against MVP scope rules before accepting it.
+- After implementation, compare the output against the requirements doc — if they diverge, either update the doc or update the code.
+
+---
+
+### Post-Implementation Rules
+
+After a feature is implemented:
+
+- Update the feature doc to reflect how it was actually built (if it changed during implementation).
+- Add any new edge cases discovered during development to `EDGE_CASES.md`.
+- Update `REGRESSION_CHECKLIST.md` if the feature touches auth, clubs, DB persistence, or navigation.
+- Update `FEATURES.md` status from 🔧 to ✅.
+
+---
+
+### Feature Implementation Checklist
+
+Use this before marking any feature ready to commit:
+
+- [ ] Requirements documented in `/docs/features/`
+- [ ] Architecture reviewed — fits existing patterns, no unnecessary new layers
+- [ ] Validation rules defined and implemented (frontend + backend)
+- [ ] Edge cases reviewed against `EDGE_CASES.md`
+- [ ] Testing notes added to the feature doc or `/docs/testing/`
+- [ ] Implementation completed (backend route + frontend wired up)
+- [ ] Manually tested: happy path + at least two error cases
+- [ ] Documentation updated to reflect actual implementation
+- [ ] `FEATURES.md` status updated
+- [ ] Ready to commit
+
+---
+
 ## MVP Scope Rules
 
 - Avoid adding complexity that isn't required by the current feature.
@@ -142,29 +224,34 @@ A feature is **done** when all of these are true:
 
 ## Implementation Workflow
 
-Every feature follows this sequence:
+Every feature follows this sequence. Do not skip steps.
 
 ```
-1. Requirements
-   └── What does this feature do? Who uses it? What can go wrong?
+1. Idea
+   └── Capture what the feature is and why it's needed
 
-2. Documentation
-   └── Write or update the feature doc in /docs/features/
+2. Feature Request
+   └── Add a stub to FEATURES.md — name, purpose, status: 📋
 
-3. Backend first
-   └── Implement the API route → test with curl or Postman
+3. Requirements Doc
+   └── Write /docs/features/<FEATURE>_FLOW.md
+       Must cover: user workflow, frontend, backend, DB, validation, edge cases, QA
 
-4. Frontend second
-   └── Wire the page/form to the tested API
+4. Testing Considerations
+   └── Review EDGE_CASES.md for anything relevant
+       Add QA checklist to the feature doc before touching code
 
-5. Testing
-   └── Run through the manual test checklist
+5. Implementation
+   a. Backend first — implement the route, test with curl or Postman
+   b. Frontend second — wire the page/form to the tested API
 
-6. Review
-   └── Check against Definition of Done
+6. Validation
+   └── Run through the feature doc's QA checklist manually
+       Verify DB state, API responses, and UI behavior together
 
 7. Commit
    └── Clear commit message describing what was built
+       All Definition of Done items checked
 ```
 
-Do not skip steps. Do not implement frontend before the API works.
+Do not implement frontend before the backend API is tested. Do not commit before the QA checklist passes.

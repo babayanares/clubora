@@ -1,18 +1,9 @@
 const router = require('express').Router();
+const { requireAuth } = require('../middleware/auth');
+const { createClub, getClubs, getClub } = require('../controllers/clubs');
 
-// GET /api/clubs
-router.get('/', (req, res) => {
-  res.json({ clubs: [] });
-});
-
-// GET /api/clubs/:id
-router.get('/:id', (req, res) => {
-  res.json({ club: null, id: req.params.id });
-});
-
-// POST /api/clubs
-router.post('/', (req, res) => {
-  res.json({ message: 'Create club — not yet implemented' });
-});
+router.get('/', getClubs);
+router.get('/:id', getClub);
+router.post('/', requireAuth, createClub);
 
 module.exports = router;
