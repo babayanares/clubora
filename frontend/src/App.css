@@ -1,0 +1,227 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: #f8f9fa;
+  color: #1a1a2e;
+  min-height: 100vh;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  height: 60px;
+  background: #ffffff;
+  border-bottom: 1px solid #e9ecef;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar-brand {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #5c6bc0;
+  text-decoration: none;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.navbar-links a {
+  text-decoration: none;
+  color: #495057;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.navbar-links a:hover {
+  color: #5c6bc0;
+}
+
+/* Main layout */
+.main-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+}
+
+/* Landing */
+.landing {
+  text-align: center;
+  padding: 5rem 1rem;
+}
+
+.landing h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #1a1a2e;
+  margin-bottom: 1rem;
+}
+
+.landing p {
+  font-size: 1.2rem;
+  color: #6c757d;
+  margin-bottom: 2rem;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  padding: 0.75rem 1.75rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  background: #5c6bc0;
+  color: #ffffff;
+}
+
+.btn-secondary {
+  background: #e9ecef;
+  color: #1a1a2e;
+}
+
+/* Auth pages */
+.auth-page {
+  max-width: 420px;
+  margin: 4rem auto;
+  background: #ffffff;
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
+}
+
+.auth-page h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.6rem;
+}
+
+.auth-page form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.auth-page input {
+  padding: 0.7rem 1rem;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.auth-page input:focus {
+  border-color: #5c6bc0;
+}
+
+.auth-page button {
+  padding: 0.75rem;
+  background: #5c6bc0;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: opacity 0.2s;
+}
+
+.auth-page button:hover {
+  opacity: 0.9;
+}
+
+.auth-page p {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.auth-page a {
+  color: #5c6bc0;
+}
+
+/* Generic page */
+.page h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.page p {
+  color: #6c757d;
+}
+
+/* Create club form */
+.page form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 520px;
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
+  margin-top: 1.5rem;
+}
+
+.page input,
+.page textarea {
+  padding: 0.7rem 1rem;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+  resize: vertical;
+}
+
+.page input:focus,
+.page textarea:focus {
+  border-color: #5c6bc0;
+}
+
+.page button[type='submit'] {
+  padding: 0.75rem;
+  background: #5c6bc0;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.page button[type='submit']:hover {
+  opacity: 0.9;
+}
