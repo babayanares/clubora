@@ -73,8 +73,8 @@
 
 | Scenario                                         | Expected behavior              | Status |
 |--------------------------------------------------|--------------------------------|--------|
-| View a club with ID that doesn't exist           | 404 — club not found           | 📋     |
-| View a club with a non-numeric ID (`/clubs/abc`) | 400 — invalid ID               | 📋     |
+| View a club with ID that doesn't exist           | 404 — club not found           | ✅     |
+| View a club with a non-numeric ID (`/clubs/abc`) | 400 — invalid ID               | ✅     |
 | Create a club while not logged in                | 401 — unauthorized             | ✅     |
 | Owner tries to leave their own club              | Handled (transfer or block)    | 📋     |
 

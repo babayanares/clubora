@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/client';
 import { isLoggedIn } from '../api/auth';
+import TagInput from '../components/TagInput';
 
-const INTEREST_SUGGESTIONS = ['Technology', 'Sports', 'Music', 'Art', 'Gaming', 'Reading', 'Fitness', 'Travel', 'Photography', 'Cooking'];
+const INTEREST_SUGGESTIONS = ['technology', 'sports', 'music', 'art', 'gaming', 'reading', 'fitness', 'travel', 'photography', 'cooking'];
 
 export default function CreateClub() {
   const navigate = useNavigate();
@@ -14,7 +15,6 @@ export default function CreateClub() {
     interests: [],
     visibility: 'public',
   });
-  const [interestInput, setInterestInput] = useState('');
   const [errors, setErrors] = useState({});
   const [apiError, setApiError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -26,25 +26,6 @@ export default function CreateClub() {
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: '' });
-  };
-
-  const addInterest = (tag) => {
-    const clean = tag.trim();
-    if (!clean || form.interests.includes(clean)) return;
-    setForm({ ...form, interests: [...form.interests, clean] });
-    setInterestInput('');
-    setErrors({ ...errors, interests: '' });
-  };
-
-  const removeInterest = (tag) => {
-    setForm({ ...form, interests: form.interests.filter((t) => t !== tag) });
-  };
-
-  const handleInterestKeyDown = (e) => {
-    if (e.key === 'Enter' || e.key === ',') {
-      e.preventDefault();
-      addInterest(interestInput);
-    }
   };
 
   const validate = () => {
@@ -135,30 +116,15 @@ export default function CreateClub() {
 
         <div className="form-group">
           <label>Interests / Tags <span className="required">*</span></label>
-          <div className="tag-input-wrapper">
-            <div className="tags-list">
-              {form.interests.map((tag) => (
-                <span key={tag} className="tag">
-                  {tag}
-                  <button type="button" className="tag-remove" onClick={() => removeInterest(tag)} aria-label={`Remove ${tag}`}>×</button>
-                </span>
-              ))}
-            </div>
-            <input
-              type="text"
-              placeholder="Type a tag and press Enter or comma"
-              value={interestInput}
-              onChange={(e) => setInterestInput(e.target.value)}
-              onKeyDown={handleInterestKeyDown}
-              onBlur={() => interestInput.trim() && addInterest(interestInput)}
-            />
-          </div>
+          <TagInput
+            tags={form.interests}
+            onChange={(tags) => {
+              setForm({ ...form, interests: tags });
+              setErrors({ ...errors, interests: '' });
+            }}
+            suggestions={INTEREST_SUGGESTIONS}
+          />
           {errors.interests && <p className="field-error">{errors.interests}</p>}
-          <div className="suggestions">
-            {INTEREST_SUGGESTIONS.filter((s) => !form.interests.includes(s)).map((s) => (
-              <button key={s} type="button" className="suggestion-chip" onClick={() => addInterest(s)}>{s}</button>
-            ))}
-          </div>
         </div>
 
         <div className="form-group">

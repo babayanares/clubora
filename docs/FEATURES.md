@@ -39,15 +39,16 @@
 | View club details    | 📋     | GET /api/clubs/:id — stub exists             |
 | Edit a club          | 📋     | PATCH /api/clubs/:id (owner only)            |
 | Delete a club        | 📋     | DELETE /api/clubs/:id (owner only)           |
-| Join a club          | 📋     | POST /api/clubs/:id/join                     |
+| Join a club          | ✅     | POST /api/clubs/:id/join — public clubs only |
 | Leave a club         | 📋     | DELETE /api/clubs/:id/leave                  |
 
 ### User Profile
 | Feature              | Status | Notes                          |
 |----------------------|--------|--------------------------------|
-| View own profile     | 📋     | GET /api/users/:id             |
-| Edit profile         | 📋     | PATCH /api/users/:id           |
-| View joined clubs    | 📋     | Derived from Membership table  |
+| View own profile     | ✅     | GET /api/users/:id — name, email, bio, location, interests |
+| Edit profile         | ✅     | PATCH /api/users/:id — name, bio, location, interests      |
+| View joined clubs    | ✅     | Shown on profile page, derived from Membership             |
+| Interest selection   | ✅     | Tag input on profile edit — up to 20 tags, deduplicated    |
 
 ### Navigation & UI
 | Feature              | Status | Notes                                        |
@@ -57,6 +58,7 @@
 | All page routes      | ✅     | React Router wired up                        |
 | Explore Clubs page   | ✅     | Fetches real clubs, grid layout, loading/error states |
 | Create Club page     | ✅     | Full form with tag input, validation, redirect |
+| Club Details page    | ✅     | Full club view, owner, member count, tags, error states |
 
 ---
 

@@ -83,6 +83,7 @@ async function getClub(req, res) {
     where: { id },
     include: {
       owner: { select: { id: true, name: true } },
+      memberships: { select: { userId: true, role: true } },
       _count: { select: { memberships: true } },
     },
   });
@@ -94,4 +95,34 @@ async function getClub(req, res) {
   res.json({ club });
 }
 
-module.exports = { createClub, getClubs, getClub };
+async function joinClub(req, res, next) {
+  try {
+    const id = parseInt(req.params.id, 10);
+    if (isNaN(id)) return res.status(400).json({ error: 'Invalid club ID' });
+
+    const club = await prisma.club.findUnique({
+      where: { id },
+      select: { id: true, visibility: true },
+    });
+    if (!club) return res.status(404).json({ error: 'Club not found' });
+    if (club.visibility === 'private') return res.status(403).json({ error: 'This club is private' });
+
+    const existing = await prisma.membership.findUnique({
+      where: { userId_clubId: { userId: req.user.userId, clubId: id } },
+    });
+    if (existing) return res.status(409).json({ error: 'You are already a member of this club' });
+
+    const membership = await prisma.membership.create({
+      data: { userId: req.user.userId, clubId: id, role: 'member' },
+      select: { userId: true, clubId: true, role: true, joinedAt: true },
+    });
+
+    const memberCount = await prisma.membership.count({ where: { clubId: id } });
+
+    res.status(201).json({ membership, memberCount });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { createClub, getClubs, getClub, joinClub };

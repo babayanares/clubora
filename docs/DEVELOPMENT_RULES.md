@@ -222,36 +222,105 @@ A feature is **done** when all of these are true:
 
 ---
 
+## Feature Completion & Status Management
+
+Feature status is tracked in [MVP_FEATURE_BACKLOG.md](./MVP_FEATURE_BACKLOG.md). Status must reflect reality — not optimism.
+
+### Status Definitions
+
+| Status      | When to use                                                    |
+|-------------|----------------------------------------------------------------|
+| DONE        | All checklist items below are satisfied. No exceptions.        |
+| IN PROGRESS | Implementation has started but is not complete                 |
+| TODO        | Planned, not started                                           |
+| PARTIAL     | Some layers done (e.g. backend done, frontend not wired)       |
+| BLOCKED     | Cannot proceed — depends on another feature or external issue  |
+| DEFERRED    | Explicitly moved out of MVP scope                              |
+
+Never mark a feature DONE because it "mostly works." A feature is DONE or it isn't.
+
+---
+
+### AI Governance: Before Marking DONE
+
+Before any feature is moved to DONE status, review each of the following:
+
+1. **Feature requirements** — Does the implementation match what the feature doc describes? Check `/docs/features/<FEATURE>_FLOW.md`.
+2. **Testing requirements** — Has the QA checklist in the feature doc been run? Are positive, negative, and edge cases covered?
+3. **Implementation scope** — Did any scope creep enter the implementation? Is anything missing from the requirements?
+4. **Validation rules** — Are all defined validation rules enforced on both frontend and backend?
+5. **Known issues** — Are there open issues in `KNOWN_ISSUES.md` that block this feature from being functional?
+6. **MVP limitations** — Does this feature stay within MVP scope? Were any post-MVP items accidentally included?
+
+If any of these reviews reveal a gap, the feature stays IN PROGRESS or PARTIAL until the gap is closed.
+
+---
+
+### Feature Status Checklist
+
+Use this checklist before moving any feature to DONE:
+
+- [ ] Requirements implemented as documented in `/docs/features/`
+- [ ] Frontend functional — form, loading state, error handling, success flow
+- [ ] Backend functional — correct status codes, validated inputs, consistent response shape
+- [ ] DB persistence verified — row created/updated correctly, constraints respected
+- [ ] Validation implemented on both frontend (pre-submit) and backend (server-side)
+- [ ] Edge cases reviewed against `EDGE_CASES.md` — handled or logged in `KNOWN_ISSUES.md`
+- [ ] Testing documentation updated — feature doc QA checklist, `CREATE_CLUB_TESTS.md` or equivalent
+- [ ] Regression checklist updated in `REGRESSION_CHECKLIST.md` if feature touches auth, clubs, or DB
+- [ ] No major blocking bugs — any known issues are logged and non-blocking
+- [ ] `MVP_FEATURE_BACKLOG.md` status updated to DONE
+
+---
+
 ## Implementation Workflow
 
 Every feature follows this sequence. Do not skip steps.
 
 ```
 1. Idea
-   └── Capture what the feature is and why it's needed
+   └── What is it? Why does it belong in the MVP?
 
 2. Feature Request
-   └── Add a stub to FEATURES.md — name, purpose, status: 📋
+   └── Add to MVP_FEATURE_BACKLOG.md with status TODO
+       Add stub to FEATURES.md
 
-3. Requirements Doc
-   └── Write /docs/features/<FEATURE>_FLOW.md
-       Must cover: user workflow, frontend, backend, DB, validation, edge cases, QA
+3. Requirements Documentation
+   └── Write or update /docs/features/<FEATURE>_FLOW.md
+       Must cover: business purpose, user workflow, frontend,
+       backend, DB, validation rules, edge cases, QA checklist
 
 4. Testing Considerations
-   └── Review EDGE_CASES.md for anything relevant
-       Add QA checklist to the feature doc before touching code
+   └── Review EDGE_CASES.md — add any new scenarios
+       Write the QA checklist in the feature doc before coding
 
 5. Implementation
-   a. Backend first — implement the route, test with curl or Postman
-   b. Frontend second — wire the page/form to the tested API
+   a. Update backlog status → IN PROGRESS
+   b. Backend first — implement route, test with curl/Postman
+   c. Frontend second — wire form/page to the tested API
 
-6. Validation
-   └── Run through the feature doc's QA checklist manually
-       Verify DB state, API responses, and UI behavior together
+6. Manual Testing
+   └── Run through the feature doc's QA checklist
+       Test: happy path, at least two error cases, one edge case
+       Verify DB state with Prisma Studio
 
-7. Commit
-   └── Clear commit message describing what was built
-       All Definition of Done items checked
+7. Validation Review
+   └── Run the Feature Status Checklist above
+       If anything fails — fix it before proceeding
+
+8. Documentation Update
+   └── Update feature doc to reflect actual implementation
+       Update KNOWN_ISSUES.md if bugs were found
+       Update EDGE_CASES.md with anything discovered
+
+9. Feature Status Update
+   └── Update MVP_FEATURE_BACKLOG.md → DONE
+       Update FEATURES.md → ✅
+
+10. Commit
+    └── Clear commit message describing what was built
 ```
 
-Do not implement frontend before the backend API is tested. Do not commit before the QA checklist passes.
+Do not implement frontend before the backend API is tested.
+Do not mark a feature DONE before the Feature Status Checklist passes.
+Do not commit before manual testing is complete.

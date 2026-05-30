@@ -1,18 +1,18 @@
 # USER_PROFILE_FLOW.md
 
-> Feature flow document for viewing and editing a user profile.
+> Feature flow document for the Profile Setup feature — viewing and editing a user's own profile.
 
 ---
 
 ## Feature Goal
 
-Allow users to view their own profile, see the clubs they've joined, and update their display name.
+Allow authenticated users to view and update their profile: name, bio, and location. Also shows a list of clubs they've joined so the profile page serves as a lightweight personal dashboard.
 
 ---
 
 ## Business Purpose
 
-A profile page gives users a sense of identity on the platform and shows their club activity. It also enables features like "view who joined this club" — profiles are the social glue.
+A profile page gives users an identity on the platform. Bio and location help others understand who they are when viewing club membership lists. Profile data also enables future features like interest-based recommendations and public profiles.
 
 ---
 
@@ -20,34 +20,37 @@ A profile page gives users a sense of identity on the platform and shows their c
 
 **View own profile:**
 1. Logged-in user navigates to `/profile`
-2. Their name, email, and joined clubs are displayed
+2. Their name, email, bio, location, and joined clubs are displayed
 
 **Edit profile:**
 1. User clicks "Edit Profile"
-2. Name field becomes editable
-3. User updates their name and saves
-4. Profile page reflects the new name
+2. Name, bio, and location fields become editable
+3. User updates one or more fields and clicks "Save"
+4. Profile re-renders with new values
 
 ---
 
 ## Frontend Responsibilities
 
-- `Profile.jsx` — display user info and joined clubs
-- On mount, fetch profile data from `GET /api/users/:id` (using ID from stored token)
-- Show name, email, list of joined clubs
-- Provide an "Edit" button that reveals an editable name field
-- On save, call `PATCH /api/users/:id` with updated name
+- `Profile.jsx` — display and edit user info; list joined clubs
+- On mount, read `userId` from stored user object in localStorage
+- Call `GET /api/users/:id` to fetch full profile data
+- Guard route: redirect to `/login` if not logged in
+- Show name, email (read-only), bio (optional), location (optional)
+- "Edit Profile" toggles editable mode for name, bio, location
+- On save, call `PATCH /api/users/:id` with updated fields
 - Show success/error feedback after saving
-- This page is only accessible to logged-in users
+- List joined clubs with links to each club's detail page
+- Empty state when user has no memberships
 
 ---
 
 ## Backend Responsibilities
 
-- `GET /api/users/:id` — return user profile with their clubs
-- `PATCH /api/users/:id` — update user's name
-- Both routes require authentication
-- Users can only view/edit their own profile (for MVP)
+- `GET /api/users/:id` — return user profile with their club memberships
+- `PATCH /api/users/:id` — update name, bio, and/or location
+- Both routes require authentication (`requireAuth` middleware)
+- Users can only view/edit their own profile — return 403 for other user IDs
 
 ---
 
@@ -61,9 +64,16 @@ prisma.user.findUnique({
     id: true,
     name: true,
     email: true,
+    bio: true,
+    location: true,
     createdAt: true,
     memberships: {
-      include: { club: true }
+      include: {
+        club: {
+          select: { id: true, name: true, category: true, visibility: true }
+        }
+      },
+      orderBy: { joinedAt: 'desc' }
     }
   }
 })
@@ -73,20 +83,32 @@ prisma.user.findUnique({
 ```
 prisma.user.update({
   where: { id },
-  data: { name }
+  data: { name, bio, location },
+  select: { id: true, name: true, email: true, bio: true, location: true }
 })
 ```
 
 ---
 
+## Schema Changes Required
+
+Add two optional fields to the `User` model:
+- `bio String?` — short personal description
+- `location String?` — city or region
+
+These require a new migration: `add_bio_location_to_user`.
+
+---
+
 ## Validation Rules
 
-| Field | Rules                             |
-|-------|-----------------------------------|
-| name  | Required. Min 2 chars. Max 100 chars. |
+| Field    | Rules                                         |
+|----------|-----------------------------------------------|
+| name     | Required. Min 2 chars. Max 100 chars. Trim whitespace. |
+| bio      | Optional. Max 300 chars.                      |
+| location | Optional. Max 100 chars.                      |
 
-Password change is out of scope for MVP.
-Email change is out of scope for MVP.
+Email and password changes are out of scope for MVP.
 
 ---
 
@@ -103,16 +125,19 @@ Success (200):
     "id": 1,
     "name": "Alex Rivera",
     "email": "alex@example.com",
+    "bio": "Photographer and weekend hiker.",
+    "location": "Los Angeles, CA",
     "createdAt": "2026-05-25T20:00:00.000Z",
     "memberships": [
       {
+        "joinedAt": "2026-05-26T10:00:00.000Z",
+        "role": "admin",
         "club": {
-          "id": 2,
+          "id": 1,
           "name": "Photography Club",
-          "category": "Creative"
-        },
-        "role": "member",
-        "joinedAt": "2026-05-26T10:00:00.000Z"
+          "category": "Creative",
+          "visibility": "public"
+        }
       }
     ]
   }
@@ -126,7 +151,9 @@ Headers: `Authorization: Bearer <token>`
 Request:
 ```json
 {
-  "name": "Alex R."
+  "name": "Alex R.",
+  "bio": "Photographer, hiker, coffee enthusiast.",
+  "location": "San Francisco, CA"
 }
 ```
 
@@ -136,7 +163,9 @@ Success (200):
   "user": {
     "id": 1,
     "name": "Alex R.",
-    "email": "alex@example.com"
+    "email": "alex@example.com",
+    "bio": "Photographer, hiker, coffee enthusiast.",
+    "location": "San Francisco, CA"
   }
 }
 ```
@@ -145,13 +174,16 @@ Success (200):
 
 ## Error Handling
 
-| Scenario                       | HTTP Status | Error Message                    |
-|--------------------------------|-------------|----------------------------------|
-| Not authenticated              | 401         | `"You must be logged in"`        |
-| Trying to view another user    | 403         | `"Not authorized"`               |
-| User not found                 | 404         | `"User not found"`               |
-| Name too short                 | 400         | `"Name must be at least 2 characters"` |
-| Name missing                   | 400         | `"Name is required"`             |
+| Scenario                       | HTTP Status | Error Message                          |
+|--------------------------------|-------------|----------------------------------------|
+| Not authenticated              | 401         | `"You must be logged in"`              |
+| Trying to view another user    | 403         | `"Not authorized"`                     |
+| User not found                 | 404         | `"User not found"`                     |
+| Name is empty / whitespace     | 400         | `"Name is required"`                   |
+| Name too short (< 2 chars)     | 400         | `"Name must be at least 2 characters"` |
+| Name too long (> 100 chars)    | 400         | `"Name cannot exceed 100 characters"`  |
+| Bio too long (> 300 chars)     | 400         | `"Bio cannot exceed 300 characters"`   |
+| Location too long (> 100 chars)| 400         | `"Location cannot exceed 100 characters"` |
 
 ---
 
@@ -159,46 +191,52 @@ Success (200):
 
 ```
 User navigates to /profile
-→ Frontend reads userId from JWT
+→ Frontend reads user from localStorage
 → GET /api/users/:id
-→ Display name, email, clubs
-→ User clicks Edit
-→ Name input becomes editable
-→ User updates name, clicks Save
+→ Display name, email, bio, location, joined clubs
+→ User clicks "Edit Profile"
+→ Fields become editable
+→ User updates values, clicks "Save"
 → PATCH /api/users/:id
 → DB updated
-→ Profile re-renders with new name
+→ Profile re-renders with new values
+→ localStorage user object updated with new name
 ```
 
 ---
 
 ## Edge Cases
 
-- User directly visits `/profile/:id` of another user — for MVP, show 403 or redirect to own profile
-- Token contains a userId that no longer exists in DB — return 404
-- User updates name to only whitespace — trim and reject
-- User hasn't joined any clubs — show "You haven't joined any clubs yet" with a link to Explore
+- User directly navigates to `/profile` — must be auth-guarded (redirect to `/login`)
+- PATCH with no body fields — validate that at least name is present
+- Name updated to only whitespace — trim and reject as empty
+- User has no club memberships — show empty state with link to Explore
+- Bio/location not provided in PATCH — treat as clearing those fields (set to null)
 
 ---
 
 ## QA Checklist
 
-- [ ] Profile page shows correct name and email
-- [ ] Profile page shows list of joined clubs
+- [ ] Profile page shows correct name, email, bio, location
+- [ ] Profile page shows list of joined clubs with links
 - [ ] Empty state shown when user has no memberships
-- [ ] Can update name successfully
-- [ ] Cannot save empty name
+- [ ] Can update name, bio, and location successfully
+- [ ] Cannot save with empty or whitespace-only name
 - [ ] Cannot save name under 2 characters
-- [ ] Profile page inaccessible without login
-- [ ] DB reflects updated name after save
+- [ ] Cannot save name over 100 characters
+- [ ] Bio over 300 chars is rejected
+- [ ] Profile page redirects to /login if not authenticated
+- [ ] Attempting to view another user's profile returns 403
+- [ ] DB reflects updated values after save
+- [ ] localStorage user object has new name after save
 
 ---
 
 ## Future Improvements
 
 - Upload a profile photo
-- Add a bio / about section
-- View clubs the user owns vs. clubs they've joined
-- Public profile view (other users can see your profile)
-- Change email or password
+- Public profile view (other users can view your profile)
+- View clubs owned vs. clubs joined separately
+- Change password flow
 - Delete account
+- Interest selection (tracked separately — step 5 in implementation order)

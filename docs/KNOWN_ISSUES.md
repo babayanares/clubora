@@ -21,18 +21,6 @@
 
 ## Open Issues
 
-### Backend
-
-| ID    | Status | Description                                                        | Impact       |
-|-------|--------|--------------------------------------------------------------------|--------------|
-| BE-05 | ⚠️     | Club Details route (`GET /api/clubs/:id`) stub not fully wired     | Low (not yet linked in UI) |
-
-### Frontend
-
-| ID    | Status | Description                                                        | Impact       |
-|-------|--------|--------------------------------------------------------------------|--------------|
-| FE-03 | ⚠️     | Dashboard and Profile pages are still stubs — no real content yet  | Low (not linked in nav for logged-out users) |
-
 ### Database
 
 | ID    | Status | Description                                                        | Impact       |
@@ -52,8 +40,10 @@
 | BE-03 | ✅     | No auth middleware — `requireAuth` middleware now protects POST /clubs   | 2026-05-26 |
 | BE-04 | ✅     | Passwords not hashed — bcrypt now used in register flow                  | 2026-05-26 |
 | BE-05 | ✅     | No global error handler — added to `src/index.js`                        | 2026-05-26 |
+| BE-06 | ✅     | Club Details route stub not wired — GET /clubs/:id fully implemented     | 2026-05-27 |
 | FE-01 | ✅     | Forms not wired to API — Login, Register, CreateClub now call real API   | 2026-05-26 |
 | FE-02 | ✅     | No loading/error states — all three forms now have them                  | 2026-05-26 |
+| FE-03 | ✅     | Profile and Dashboard were stubs — Profile fully implemented             | 2026-05-28 |
 | FE-04 | ✅     | Navbar showed all links regardless of auth — now auth-aware              | 2026-05-26 |
 
 ---

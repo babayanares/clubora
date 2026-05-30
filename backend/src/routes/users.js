@@ -1,8 +1,8 @@
 const router = require('express').Router();
+const { requireAuth } = require('../middleware/auth');
+const { getProfile, updateProfile } = require('../controllers/users');
 
-// GET /api/users/:id
-router.get('/:id', (req, res) => {
-  res.json({ user: null, id: req.params.id });
-});
+router.get('/:id', requireAuth, getProfile);
+router.patch('/:id', requireAuth, updateProfile);
 
 module.exports = router;
