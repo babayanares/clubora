@@ -40,7 +40,7 @@
 | Edit a club          | 📋     | PATCH /api/clubs/:id (owner only)            |
 | Delete a club        | 📋     | DELETE /api/clubs/:id (owner only)           |
 | Join a club          | ✅     | POST /api/clubs/:id/join — public clubs only |
-| Leave a club         | 📋     | DELETE /api/clubs/:id/leave                  |
+| Leave a club         | ✅     | DELETE /api/clubs/:id/leave — two-step confirm UI |
 
 ### User Profile
 | Feature              | Status | Notes                          |
@@ -88,3 +88,4 @@ Each MVP feature has a detailed flow document in `/docs/features/`:
 - [INTEREST_SELECTION_FLOW.md](./features/INTEREST_SELECTION_FLOW.md)
 - [JOIN_CLUB_FLOW.md](./features/JOIN_CLUB_FLOW.md)
 - [MY_CLUBS_FLOW.md](./features/MY_CLUBS_FLOW.md)
+- [LEAVE_CLUB_FLOW.md](./features/LEAVE_CLUB_FLOW.md)

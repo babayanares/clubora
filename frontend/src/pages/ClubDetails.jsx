@@ -20,6 +20,8 @@ export default function ClubDetails() {
   const [notFound, setNotFound] = useState(false);
   const [joining, setJoining] = useState(false);
   const [joinError, setJoinError] = useState('');
+  const [leaving, setLeaving] = useState(false);
+  const [confirmLeave, setConfirmLeave] = useState(false);
 
   useEffect(() => {
     api.get(`/clubs/${id}`)
@@ -47,6 +49,27 @@ export default function ClubDetails() {
       setJoinError(err.response?.data?.error || 'Failed to join. Please try again.');
     } finally {
       setJoining(false);
+    }
+  }
+
+  async function handleLeave() {
+    if (!confirmLeave) { setConfirmLeave(true); return; }
+    setLeaving(true);
+    setJoinError('');
+    try {
+      const res = await api.delete(`/clubs/${id}/leave`);
+      const currentUser = getUser();
+      setClub((prev) => ({
+        ...prev,
+        memberships: prev.memberships.filter((m) => m.userId !== currentUser.id),
+        _count: { memberships: res.data.memberCount },
+      }));
+      setConfirmLeave(false);
+    } catch (err) {
+      setJoinError(err.response?.data?.error || 'Failed to leave. Please try again.');
+      setConfirmLeave(false);
+    } finally {
+      setLeaving(false);
     }
   }
 
@@ -91,7 +114,15 @@ export default function ClubDetails() {
       return <span className="join-badge join-badge-owner">You own this club</span>;
     }
     if (isMember) {
-      return <span className="join-badge join-badge-joined">✓ Joined</span>;
+      return (
+        <button
+          className={`btn ${confirmLeave ? 'btn-danger' : 'btn-secondary'}`}
+          onClick={handleLeave}
+          disabled={leaving}
+        >
+          {leaving ? 'Leaving…' : confirmLeave ? 'Confirm Leave?' : 'Leave Club'}
+        </button>
+      );
     }
     if (!isLoggedIn()) {
       return <Link to="/login" className="btn btn-primary">Log in to Join</Link>;

@@ -109,6 +109,11 @@ body {
   color: #1a1a2e;
 }
 
+.btn-danger {
+  background: #dc3545;
+  color: #ffffff;
+}
+
 /* Auth pages */
 .auth-page {
   max-width: 420px;

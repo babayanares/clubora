@@ -125,4 +125,33 @@ async function joinClub(req, res, next) {
   }
 }
 
-module.exports = { createClub, getClubs, getClub, joinClub };
+async function leaveClub(req, res, next) {
+  try {
+    const id = parseInt(req.params.id, 10);
+    if (isNaN(id)) return res.status(400).json({ error: 'Invalid club ID' });
+
+    const club = await prisma.club.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+    if (!club) return res.status(404).json({ error: 'Club not found' });
+
+    const membership = await prisma.membership.findUnique({
+      where: { userId_clubId: { userId: req.user.userId, clubId: id } },
+    });
+    if (!membership) return res.status(404).json({ error: 'You are not a member of this club' });
+    if (membership.role === 'admin') return res.status(403).json({ error: 'Club owners cannot leave their own club' });
+
+    await prisma.membership.delete({
+      where: { userId_clubId: { userId: req.user.userId, clubId: id } },
+    });
+
+    const memberCount = await prisma.membership.count({ where: { clubId: id } });
+
+    res.json({ memberCount });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { createClub, getClubs, getClub, joinClub, leaveClub };
