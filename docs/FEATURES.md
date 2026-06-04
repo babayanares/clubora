@@ -36,7 +36,7 @@
 |----------------------|--------|----------------------------------------------|
 | List all clubs       | ✅     | GET /api/clubs — public clubs, newest first  |
 | Create a club        | ✅     | POST /api/clubs — auth required, full fields |
-| View club details    | 📋     | GET /api/clubs/:id — stub exists             |
+| View club details    | ✅     | GET /api/clubs/:id — full club view, join button |
 | Edit a club          | 📋     | PATCH /api/clubs/:id (owner only)            |
 | Delete a club        | 📋     | DELETE /api/clubs/:id (owner only)           |
 | Join a club          | ✅     | POST /api/clubs/:id/join — public clubs only |
@@ -47,7 +47,7 @@
 |----------------------|--------|--------------------------------|
 | View own profile     | ✅     | GET /api/users/:id — name, email, bio, location, interests |
 | Edit profile         | ✅     | PATCH /api/users/:id — name, bio, location, interests      |
-| View joined clubs    | ✅     | Shown on profile page, derived from Membership             |
+| View joined clubs    | ✅     | Dashboard — owned + joined sections with member counts     |
 | Interest selection   | ✅     | Tag input on profile edit — up to 20 tags, deduplicated    |
 
 ### Navigation & UI
@@ -83,4 +83,8 @@ Each MVP feature has a detailed flow document in `/docs/features/`:
 - [AUTH_FLOW.md](./features/AUTH_FLOW.md)
 - [CREATE_CLUB_FLOW.md](./features/CREATE_CLUB_FLOW.md)
 - [EXPLORE_CLUBS_FLOW.md](./features/EXPLORE_CLUBS_FLOW.md)
+- [CLUB_DETAILS_FLOW.md](./features/CLUB_DETAILS_FLOW.md)
 - [USER_PROFILE_FLOW.md](./features/USER_PROFILE_FLOW.md)
+- [INTEREST_SELECTION_FLOW.md](./features/INTEREST_SELECTION_FLOW.md)
+- [JOIN_CLUB_FLOW.md](./features/JOIN_CLUB_FLOW.md)
+- [MY_CLUBS_FLOW.md](./features/MY_CLUBS_FLOW.md)

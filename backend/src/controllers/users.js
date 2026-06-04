@@ -24,7 +24,13 @@ async function getProfile(req, res, next) {
             role: true,
             joinedAt: true,
             club: {
-              select: { id: true, name: true, category: true, visibility: true },
+              select: {
+                id: true,
+                name: true,
+                category: true,
+                visibility: true,
+                _count: { select: { memberships: true } },
+              },
             },
           },
           orderBy: { joinedAt: 'desc' },

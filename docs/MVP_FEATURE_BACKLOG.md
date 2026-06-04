@@ -43,7 +43,7 @@ A feature must meet the **Feature Status Checklist** (see `DEVELOPMENT_RULES.md`
 | TODO   | Delete Club         | Owner permanently removes a club              |
 | DONE   | Join Club           | User becomes a member of a public club        |
 | TODO   | Leave Club          | User removes themselves from a club           |
-| TODO   | My Clubs            | View all clubs the user owns or has joined    |
+| DONE   | My Clubs            | View all clubs the user owns or has joined    |
 
 > **Note:** Search and filtering are tracked separately under Discovery Features (step 10 in implementation order).
 
@@ -135,7 +135,7 @@ Build in this sequence. Each step depends on the previous ones being stable.
 4.  Profile Setup             ✅ DONE
 5.  Interest Selection        ✅ DONE
 6.  Join Club                 ✅ DONE
-7.  My Clubs                  — user dashboard
+7.  My Clubs                  ✅ DONE
 8.  Leave Club                — membership management
 9.  Club Posts                — discussion feed
 10. Search & Filtering        — discovery layer
@@ -198,11 +198,11 @@ Through a deployed full-stack web application with:
 | Category              | Done | Todo | Deferred |
 |-----------------------|------|------|----------|
 | User & Auth           | 4    | 0    | 0        |
-| Club Features         | 4    | 4    | 0        |
+| Club Features         | 5    | 3    | 0        |
 | Discovery             | 0    | 4    | 0        |
 | Collaboration         | 0    | 4    | 0        |
 | Permissions           | 1    | 3    | 0        |
 | QA & Validation       | 4    | 1    | 0        |
 | Deployment/Portfolio  | 0    | 5    | 0        |
 | Out of Scope          | —    | —    | 9        |
-| **Total**             | **13**| **21**| **9** |
+| **Total**             | **14**| **20**| **9** |

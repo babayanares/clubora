@@ -581,3 +581,83 @@ body {
 .profile-club-name:hover { color: #5c6bc0; }
 
 .profile-club-meta { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+/* My Clubs / Dashboard */
+.my-clubs-section {
+  margin-bottom: 2.5rem;
+}
+
+.my-clubs-section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.my-clubs-count {
+  background: #e8eaf6;
+  color: #3949ab;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.15rem 0.55rem;
+  border-radius: 20px;
+}
+
+.my-clubs-empty {
+  background: #ffffff;
+  border: 1px dashed #dee2e6;
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  color: #6c757d;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.my-clubs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.my-club-card {
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 1.25rem;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: box-shadow 0.2s, transform 0.1s;
+}
+
+.my-club-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.09);
+  transform: translateY(-2px);
+}
+
+.my-club-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.my-club-card-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  line-height: 1.3;
+}
+
+.my-club-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
