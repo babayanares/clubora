@@ -11,6 +11,18 @@ function formatDate(iso) {
   });
 }
 
+function timeAgo(iso) {
+  const seconds = Math.floor((Date.now() - new Date(iso)) / 1000);
+  if (seconds < 60) return 'just now';
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `${days}d ago`;
+  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
 export default function ClubDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -22,6 +34,11 @@ export default function ClubDetails() {
   const [joinError, setJoinError] = useState('');
   const [leaving, setLeaving] = useState(false);
   const [confirmLeave, setConfirmLeave] = useState(false);
+  const [posts, setPosts] = useState([]);
+  const [postsLoading, setPostsLoading] = useState(true);
+  const [postContent, setPostContent] = useState('');
+  const [posting, setPosting] = useState(false);
+  const [postError, setPostError] = useState('');
 
   useEffect(() => {
     api.get(`/clubs/${id}`)
@@ -31,6 +48,11 @@ export default function ClubDetails() {
         else setError('Failed to load club. Please try again.');
       })
       .finally(() => setLoading(false));
+
+    api.get(`/clubs/${id}/posts`)
+      .then((res) => setPosts(res.data.posts))
+      .catch(() => {})
+      .finally(() => setPostsLoading(false));
   }, [id]);
 
   async function handleJoin() {
@@ -70,6 +92,22 @@ export default function ClubDetails() {
       setConfirmLeave(false);
     } finally {
       setLeaving(false);
+    }
+  }
+
+  async function handlePost(e) {
+    e.preventDefault();
+    if (!postContent.trim()) return;
+    setPosting(true);
+    setPostError('');
+    try {
+      const res = await api.post(`/clubs/${id}/posts`, { content: postContent.trim() });
+      setPosts((prev) => [res.data.post, ...prev]);
+      setPostContent('');
+    } catch (err) {
+      setPostError(err.response?.data?.error || 'Failed to post. Please try again.');
+    } finally {
+      setPosting(false);
     }
   }
 
@@ -182,6 +220,59 @@ export default function ClubDetails() {
         )}
 
       </div>
+
+      {/* Posts feed */}
+      <div className="posts-section">
+        <h3 className="posts-section-title">Discussion</h3>
+
+        {/* Post form — members only */}
+        {isLoggedIn() && (isOwner || isMember) ? (
+          <form className="post-form" onSubmit={handlePost}>
+            <textarea
+              className="post-textarea"
+              placeholder="Write something for the club…"
+              value={postContent}
+              onChange={(e) => setPostContent(e.target.value)}
+              maxLength={1000}
+              rows={3}
+            />
+            <div className="post-form-footer">
+              <span className="field-hint">{postContent.length}/1000</span>
+              <button type="submit" className="btn btn-primary" disabled={posting || !postContent.trim()}>
+                {posting ? 'Posting…' : 'Post'}
+              </button>
+            </div>
+            {postError && <p className="field-error">{postError}</p>}
+          </form>
+        ) : (
+          <div className="post-join-prompt">
+            {!isLoggedIn()
+              ? <><Link to="/login">Log in</Link> to post in this club.</>
+              : <>Join this club to start posting.</>
+            }
+          </div>
+        )}
+
+        {/* Feed */}
+        {postsLoading ? (
+          <p className="status-msg">Loading posts…</p>
+        ) : posts.length === 0 ? (
+          <div className="posts-empty">No posts yet. Be the first to post!</div>
+        ) : (
+          <ul className="posts-list">
+            {posts.map((post) => (
+              <li key={post.id} className="post-item">
+                <div className="post-meta">
+                  <span className="post-author">{post.author.name}</span>
+                  <span className="post-time">{timeAgo(post.createdAt)}</span>
+                </div>
+                <p className="post-content">{post.content}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
     </div>
   );
 }

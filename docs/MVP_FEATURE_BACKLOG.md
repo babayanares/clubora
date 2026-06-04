@@ -64,8 +64,8 @@ A feature must meet the **Feature Status Checklist** (see `DEVELOPMENT_RULES.md`
 
 | Status | Feature                  | Purpose                                        |
 |--------|--------------------------|------------------------------------------------|
-| TODO   | Create Club Posts        | Members post discussions inside a club         |
-| TODO   | View Club Feed           | Display posts in chronological order           |
+| DONE   | Create Club Posts        | Members post discussions inside a club         |
+| DONE   | View Club Feed           | Display posts in chronological order           |
 | TODO   | Create Initiative/Project | Members propose a collaborative idea or project |
 | TODO   | View Initiatives         | Track and browse club projects                 |
 
@@ -137,7 +137,7 @@ Build in this sequence. Each step depends on the previous ones being stable.
 6.  Join Club                 ✅ DONE
 7.  My Clubs                  ✅ DONE
 8.  Leave Club                ✅ DONE
-9.  Club Posts                — discussion feed
+9.  Club Posts                ✅ DONE
 10. Search & Filtering        — discovery layer
 11. Basic Recommendations     — interest-based suggestions
 12. Club Owner Controls       — edit, delete, manage
@@ -200,9 +200,9 @@ Through a deployed full-stack web application with:
 | User & Auth           | 4    | 0    | 0        |
 | Club Features         | 6    | 2    | 0        |
 | Discovery             | 0    | 4    | 0        |
-| Collaboration         | 0    | 4    | 0        |
+| Collaboration         | 2    | 2    | 0        |
 | Permissions           | 1    | 3    | 0        |
 | QA & Validation       | 4    | 1    | 0        |
 | Deployment/Portfolio  | 0    | 5    | 0        |
 | Out of Scope          | —    | —    | 9        |
-| **Total**             | **15**| **19**| **9** |
+| **Total**             | **17**| **17**| **9** |

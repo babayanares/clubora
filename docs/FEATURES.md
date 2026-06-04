@@ -89,3 +89,4 @@ Each MVP feature has a detailed flow document in `/docs/features/`:
 - [JOIN_CLUB_FLOW.md](./features/JOIN_CLUB_FLOW.md)
 - [MY_CLUBS_FLOW.md](./features/MY_CLUBS_FLOW.md)
 - [LEAVE_CLUB_FLOW.md](./features/LEAVE_CLUB_FLOW.md)
+- [CLUB_POSTS_FLOW.md](./features/CLUB_POSTS_FLOW.md)
