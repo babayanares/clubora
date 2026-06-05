@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import ExploreClubs from './pages/ExploreClubs';
 import ClubDetails from './pages/ClubDetails';
 import CreateClub from './pages/CreateClub';
+import EditClub from './pages/EditClub';
 import Profile from './pages/Profile';
 import './App.css';
 
@@ -23,6 +24,7 @@ function App() {
           <Route path="/explore" element={<ExploreClubs />} />
           <Route path="/clubs/:id" element={<ClubDetails />} />
           <Route path="/clubs/new" element={<CreateClub />} />
+          <Route path="/clubs/:id/edit" element={<EditClub />} />
           <Route path="/profile" element={<Profile />} />
         </Routes>
       </main>

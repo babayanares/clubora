@@ -544,6 +544,14 @@ body {
 .visibility-badge.public  { background: #e8f5e9; color: #2e7d32; }
 .visibility-badge.private { background: #fce4ec; color: #c62828; }
 
+/* Owner action buttons */
+.owner-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
 /* Join club badges */
 .join-badge {
   display: inline-block;

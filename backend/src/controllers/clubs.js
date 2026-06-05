@@ -154,4 +154,61 @@ async function leaveClub(req, res, next) {
   }
 }
 
-module.exports = { createClub, getClubs, getClub, joinClub, leaveClub };
+async function updateClub(req, res, next) {
+  try {
+    const id = parseInt(req.params.id, 10);
+    if (isNaN(id)) return res.status(400).json({ error: 'Invalid club ID' });
+
+    const club = await prisma.club.findUnique({ where: { id }, select: { id: true, ownerId: true } });
+    if (!club) return res.status(404).json({ error: 'Club not found' });
+    if (club.ownerId !== req.user.userId) return res.status(403).json({ error: 'Only the club owner can do this' });
+
+    const { name, description, category, location, interests, visibility } = req.body;
+
+    const trimmedName = typeof name === 'string' ? name.trim() : '';
+    if (!trimmedName) return res.status(400).json({ error: 'Club name is required' });
+    if (trimmedName.length < 3) return res.status(400).json({ error: 'Club name must be at least 3 characters' });
+    if (trimmedName.length > 100) return res.status(400).json({ error: 'Club name must be under 100 characters' });
+    if (description && description.length > 500) return res.status(400).json({ error: 'Description must be under 500 characters' });
+
+    const parsedInterests = parseInterests(interests);
+    if (!parsedInterests) return res.status(400).json({ error: 'At least one interest is required' });
+
+    const updated = await prisma.club.update({
+      where: { id },
+      data: {
+        name: trimmedName,
+        description: description ? description.trim() : null,
+        category: category ? category.trim() : null,
+        location: location ? location.trim() : null,
+        interests: parsedInterests,
+        visibility: visibility === 'private' ? 'private' : 'public',
+      },
+    });
+
+    res.json({ club: updated });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function deleteClub(req, res, next) {
+  try {
+    const id = parseInt(req.params.id, 10);
+    if (isNaN(id)) return res.status(400).json({ error: 'Invalid club ID' });
+
+    const club = await prisma.club.findUnique({ where: { id }, select: { id: true, ownerId: true } });
+    if (!club) return res.status(404).json({ error: 'Club not found' });
+    if (club.ownerId !== req.user.userId) return res.status(403).json({ error: 'Only the club owner can do this' });
+
+    await prisma.post.deleteMany({ where: { clubId: id } });
+    await prisma.membership.deleteMany({ where: { clubId: id } });
+    await prisma.club.delete({ where: { id } });
+
+    res.json({ message: 'Club deleted' });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { createClub, getClubs, getClub, joinClub, leaveClub, updateClub, deleteClub };

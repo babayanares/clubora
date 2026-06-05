@@ -39,6 +39,8 @@ export default function ClubDetails() {
   const [postContent, setPostContent] = useState('');
   const [posting, setPosting] = useState(false);
   const [postError, setPostError] = useState('');
+  const [deleting, setDeleting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   useEffect(() => {
     api.get(`/clubs/${id}`)
@@ -92,6 +94,19 @@ export default function ClubDetails() {
       setConfirmLeave(false);
     } finally {
       setLeaving(false);
+    }
+  }
+
+  async function handleDelete() {
+    if (!confirmDelete) { setConfirmDelete(true); return; }
+    setDeleting(true);
+    try {
+      await api.delete(`/clubs/${id}`);
+      navigate('/dashboard');
+    } catch (err) {
+      setJoinError(err.response?.data?.error || 'Failed to delete. Please try again.');
+      setConfirmDelete(false);
+      setDeleting(false);
     }
   }
 
@@ -191,6 +206,18 @@ export default function ClubDetails() {
               <span className="stat-label">member{club._count.memberships !== 1 ? 's' : ''}</span>
             </div>
             {renderJoinButton()}
+            {isOwner && (
+              <div className="owner-actions">
+                <Link to={`/clubs/${id}/edit`} className="btn btn-secondary">Edit Club</Link>
+                <button
+                  className={`btn ${confirmDelete ? 'btn-danger' : 'btn-secondary'}`}
+                  onClick={handleDelete}
+                  disabled={deleting}
+                >
+                  {deleting ? 'Deleting…' : confirmDelete ? 'Confirm Delete?' : 'Delete Club'}
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
