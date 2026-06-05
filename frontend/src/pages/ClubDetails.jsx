@@ -63,10 +63,11 @@ export default function ClubDetails() {
     setJoinError('');
     try {
       const res = await api.post(`/clubs/${id}/join`);
-      const currentUser = getUser();
+      const cu = getUser();
+      const newStatus = res.data.pending ? 'pending' : 'approved';
       setClub((prev) => ({
         ...prev,
-        memberships: [...prev.memberships, { userId: currentUser.id, role: 'member' }],
+        memberships: [...prev.memberships, { userId: cu.id, role: 'member', status: newStatus, user: { id: cu.id, name: cu.name } }],
         _count: { memberships: res.data.memberCount },
       }));
     } catch (err) {
@@ -107,6 +108,33 @@ export default function ClubDetails() {
       setJoinError(err.response?.data?.error || 'Failed to delete. Please try again.');
       setConfirmDelete(false);
       setDeleting(false);
+    }
+  }
+
+  async function handleApprove(userId) {
+    try {
+      const res = await api.patch(`/clubs/${id}/requests/${userId}/approve`);
+      setClub((prev) => ({
+        ...prev,
+        memberships: prev.memberships.map((m) =>
+          m.userId === userId ? { ...m, status: 'approved' } : m
+        ),
+        _count: { memberships: res.data.memberCount },
+      }));
+    } catch (err) {
+      setJoinError(err.response?.data?.error || 'Failed to approve.');
+    }
+  }
+
+  async function handleReject(userId) {
+    try {
+      await api.delete(`/clubs/${id}/requests/${userId}/reject`);
+      setClub((prev) => ({
+        ...prev,
+        memberships: prev.memberships.filter((m) => m.userId !== userId),
+      }));
+    } catch (err) {
+      setJoinError(err.response?.data?.error || 'Failed to reject.');
     }
   }
 
@@ -155,16 +183,20 @@ export default function ClubDetails() {
     ? club.memberships.find((m) => m.userId === currentUser.id)
     : null;
   const isOwner = myMembership?.role === 'admin';
-  const isMember = !!myMembership && !isOwner;
+  const isPending = myMembership?.status === 'pending';
+  const isMember = !!myMembership && !isOwner && !isPending;
   const isPrivate = club.visibility === 'private';
   const interests = club.interests ? club.interests.split(',').map((t) => t.trim()) : [];
+  const pendingRequests = isOwner
+    ? club.memberships.filter((m) => m.status === 'pending')
+    : [];
 
   function renderJoinButton() {
-    if (isPrivate) {
-      return <span className="join-badge join-badge-private">🔒 Private Club</span>;
-    }
     if (isOwner) {
       return <span className="join-badge join-badge-owner">You own this club</span>;
+    }
+    if (isPending) {
+      return <span className="join-badge join-badge-pending">Request Pending ⏳</span>;
     }
     if (isMember) {
       return (
@@ -182,7 +214,7 @@ export default function ClubDetails() {
     }
     return (
       <button className="btn btn-primary" onClick={handleJoin} disabled={joining}>
-        {joining ? 'Joining…' : 'Join Club'}
+        {joining ? (isPrivate ? 'Requesting…' : 'Joining…') : (isPrivate ? 'Request to Join' : 'Join Club')}
       </button>
     );
   }
@@ -247,6 +279,33 @@ export default function ClubDetails() {
         )}
 
       </div>
+
+      {/* Join requests — owner of private club only */}
+      {isOwner && isPrivate && (
+        <div className="join-requests-section">
+          <h3 className="posts-section-title">
+            Join Requests
+            {pendingRequests.length > 0 && (
+              <span className="my-clubs-count" style={{ marginLeft: '0.5rem' }}>{pendingRequests.length}</span>
+            )}
+          </h3>
+          {pendingRequests.length === 0 ? (
+            <p className="posts-empty">No pending requests.</p>
+          ) : (
+            <ul className="join-requests-list">
+              {pendingRequests.map((m) => (
+                <li key={m.userId} className="join-request-item">
+                  <span className="join-request-name">{m.user?.name || 'Unknown user'}</span>
+                  <div className="join-request-actions">
+                    <button className="btn btn-primary" style={{ padding: '0.35rem 0.85rem', fontSize: '0.85rem' }} onClick={() => handleApprove(m.userId)}>Approve</button>
+                    <button className="btn btn-danger"  style={{ padding: '0.35rem 0.85rem', fontSize: '0.85rem' }} onClick={() => handleReject(m.userId)}>Reject</button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
 
       {/* Posts feed */}
       <div className="posts-section">

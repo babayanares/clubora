@@ -39,7 +39,7 @@
 | View club details    | ✅     | GET /api/clubs/:id — full club view, join button |
 | Edit a club          | ✅     | PATCH /api/clubs/:id — owner only, /clubs/:id/edit page |
 | Delete a club        | ✅     | DELETE /api/clubs/:id — cascades posts + memberships    |
-| Join a club          | ✅     | POST /api/clubs/:id/join — public clubs only |
+| Join a club          | ✅     | POST /api/clubs/:id/join — public (instant) or private (pending) |
 | Leave a club         | ✅     | DELETE /api/clubs/:id/leave — two-step confirm UI |
 
 ### User Profile

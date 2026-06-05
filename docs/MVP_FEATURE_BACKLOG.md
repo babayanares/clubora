@@ -75,9 +75,9 @@ A feature must meet the **Feature Status Checklist** (see `DEVELOPMENT_RULES.md`
 
 | Status | Feature                  | Purpose                                        |
 |--------|--------------------------|------------------------------------------------|
-| TODO   | Club Owner Controls      | Owner can edit, delete, manage their club      |
+| DONE   | Club Owner Controls      | Owner can edit, delete, manage their club      |
 | DONE   | Private/Public Clubs     | Visibility field stored and enforced on API    |
-| TODO   | Join Approval Flow       | Owner approves join requests for private clubs |
+| DONE   | Join Approval Flow       | Owner approves join requests for private clubs |
 | TODO   | Basic Admin Panel        | Platform-level moderation tools                |
 
 ---
@@ -141,7 +141,7 @@ Build in this sequence. Each step depends on the previous ones being stable.
 10. Search & Filtering        ✅ DONE
 11. Basic Recommendations     ✅ DONE
 12. Club Owner Controls       ✅ DONE
-13. Join Approval Flow        — private club gating
+13. Join Approval Flow        ✅ DONE
 14. Basic Admin               — platform health
 15. Deployment & Final QA     — ship it
 ```
@@ -201,8 +201,8 @@ Through a deployed full-stack web application with:
 | Club Features         | 8    | 0    | 0        |
 | Discovery             | 3    | 1    | 0        |
 | Collaboration         | 2    | 2    | 0        |
-| Permissions           | 1    | 3    | 0        |
+| Permissions           | 3    | 1    | 0        |
 | QA & Validation       | 4    | 1    | 0        |
 | Deployment/Portfolio  | 0    | 5    | 0        |
 | Out of Scope          | —    | —    | 9        |
-| **Total**             | **22**| **12**| **9** |
+| **Total**             | **24**| **10**| **9** |

@@ -29,7 +29,7 @@ async function getProfile(req, res, next) {
                 name: true,
                 category: true,
                 visibility: true,
-                _count: { select: { memberships: true } },
+                _count: { select: { memberships: { where: { status: 'approved' } } } },
               },
             },
           },

@@ -55,6 +55,7 @@ model Post {
 model Membership {
   id        Int      @id @default(autoincrement())
   role      String   @default("member")
+  status    String   @default("approved")
   joinedAt  DateTime @default(now())
 
   userId    Int
