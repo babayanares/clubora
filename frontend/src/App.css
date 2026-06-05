@@ -347,6 +347,111 @@ body {
 }
 .suggestion-chip:hover { background: #e8eaf6; border-color: #5c6bc0; color: #3949ab; }
 
+/* Explore search & filter */
+.explore-search-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.explore-search-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 220px;
+}
+
+.explore-search-icon {
+  position: absolute;
+  left: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.95rem;
+  pointer-events: none;
+}
+
+.explore-search-input {
+  width: 100%;
+  padding: 0.65rem 2.5rem 0.65rem 2.4rem;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+  background: #fff;
+}
+.explore-search-input:focus { border-color: #5c6bc0; }
+
+.explore-search-clear {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  color: #adb5bd;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+}
+.explore-search-clear:hover { color: #495057; }
+
+.explore-interests {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.explore-interest-chip {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 20px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.82rem;
+  cursor: pointer;
+  color: #495057;
+  font-family: inherit;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.explore-interest-chip:hover { background: #e8eaf6; border-color: #5c6bc0; color: #3949ab; }
+.explore-interest-chip.active { background: #5c6bc0; border-color: #5c6bc0; color: #fff; }
+
+.explore-active-filter {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+.explore-active-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: #e8eaf6;
+  color: #3949ab;
+  border-radius: 20px;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+.explore-active-chip button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #3949ab;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0;
+  opacity: 0.6;
+}
+.explore-active-chip button:hover { opacity: 1; }
+
 /* Clubs grid */
 .clubs-grid {
   display: grid;
