@@ -873,3 +873,24 @@ body {
   flex-wrap: wrap;
   gap: 0.4rem;
 }
+
+/* Recommendation cards */
+.recommend-card {
+  border-color: #c5cae9;
+  background: #fafbff;
+}
+.recommend-card:hover { border-color: #9fa8da; }
+
+.recommend-score {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #5c6bc0;
+  white-space: nowrap;
+}
+
+.recommend-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.4rem;
+}

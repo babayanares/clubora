@@ -56,7 +56,7 @@ A feature must meet the **Feature Status Checklist** (see `DEVELOPMENT_RULES.md`
 | DONE   | Club Search              | Find clubs by name (text input)           |
 | DONE   | Interest Filtering       | Filter clubs by matching interests/tags   |
 | TODO   | Location Filtering       | Filter clubs by city or region            |
-| TODO   | Basic Recommendations    | Suggest clubs based on user interests     |
+| DONE   | Basic Recommendations    | Suggest clubs based on user interests     |
 
 ---
 
@@ -139,7 +139,7 @@ Build in this sequence. Each step depends on the previous ones being stable.
 8.  Leave Club                ✅ DONE
 9.  Club Posts                ✅ DONE
 10. Search & Filtering        ✅ DONE
-11. Basic Recommendations     — interest-based suggestions
+11. Basic Recommendations     ✅ DONE
 12. Club Owner Controls       — edit, delete, manage
 13. Join Approval Flow        — private club gating
 14. Basic Admin               — platform health
@@ -199,10 +199,10 @@ Through a deployed full-stack web application with:
 |-----------------------|------|------|----------|
 | User & Auth           | 4    | 0    | 0        |
 | Club Features         | 6    | 2    | 0        |
-| Discovery             | 2    | 2    | 0        |
+| Discovery             | 3    | 1    | 0        |
 | Collaboration         | 2    | 2    | 0        |
 | Permissions           | 1    | 3    | 0        |
 | QA & Validation       | 4    | 1    | 0        |
 | Deployment/Portfolio  | 0    | 5    | 0        |
 | Out of Scope          | —    | —    | 9        |
-| **Total**             | **19**| **15**| **9** |
+| **Total**             | **20**| **14**| **9** |
