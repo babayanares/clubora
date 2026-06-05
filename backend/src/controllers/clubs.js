@@ -43,7 +43,6 @@ async function createClub(req, res) {
 
 async function getClubs(req, res) {
   const clubs = await prisma.club.findMany({
-    where: { visibility: 'public' },
     orderBy: { createdAt: 'desc' },
     select: {
       id: true,

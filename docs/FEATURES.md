@@ -59,6 +59,7 @@
 | Explore Clubs page   | ✅     | Fetches real clubs, grid layout, loading/error states |
 | Search clubs         | ✅     | Name search — instant client-side filtering           |
 | Filter by interest   | ✅     | Interest tag chips — toggleable, stacks with search   |
+| Private clubs in Explore | ✅ | Show private clubs with lock icon, limited info, Request to Join |
 | Create Club page     | ✅     | Full form with tag input, validation, redirect |
 | Club Details page    | ✅     | Full club view, owner, member count, tags, error states |
 

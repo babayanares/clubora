@@ -473,6 +473,17 @@ body {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   transform: translateY(-2px);
 }
+.club-card-private { background: #fafafa; border-color: #ddd; }
+.club-card-private:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+
+.club-card-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+.club-card-name-row .club-card-name { margin-bottom: 0; }
 
 .club-card-body { padding: 1.25rem; }
 .club-card-name { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.4rem; color: #1a1a2e; }

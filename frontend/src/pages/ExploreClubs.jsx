@@ -120,25 +120,36 @@ export default function ExploreClubs() {
         </div>
       ) : (
         <div className="clubs-grid">
-          {filtered.map((club) => (
-            <Link to={`/clubs/${club.id}`} key={club.id} className="club-card">
-              <div className="club-card-body">
-                <h3 className="club-card-name">{club.name}</h3>
-                {club.description && <p className="club-card-desc">{club.description}</p>}
-                <div className="club-card-meta">
-                  {club.location && <span className="meta-chip">📍 {club.location}</span>}
-                  <span className="meta-chip">👥 {club._count.memberships} member{club._count.memberships !== 1 ? 's' : ''}</span>
-                </div>
-                {club.interests && (
-                  <div className="club-card-tags">
-                    {club.interests.split(',').map((t) => (
-                      <span key={t} className="tag">{t.trim()}</span>
-                    ))}
+          {filtered.map((club) => {
+            const isPrivate = club.visibility === 'private';
+            return (
+              <Link
+                to={`/clubs/${club.id}`}
+                key={club.id}
+                className={`club-card${isPrivate ? ' club-card-private' : ''}`}
+              >
+                <div className="club-card-body">
+                  <div className="club-card-name-row">
+                    <h3 className="club-card-name">{club.name}</h3>
+                    {isPrivate && <span className="visibility-badge private" style={{ fontSize: '0.72rem' }}>🔒 Private</span>}
                   </div>
-                )}
-              </div>
-            </Link>
-          ))}
+                  {!isPrivate && club.description && <p className="club-card-desc">{club.description}</p>}
+                  <div className="club-card-meta">
+                    {!isPrivate && club.location && <span className="meta-chip">📍 {club.location}</span>}
+                    <span className="meta-chip">👥 {club._count.memberships} member{club._count.memberships !== 1 ? 's' : ''}</span>
+                    {isPrivate && <span className="meta-chip">Request to join</span>}
+                  </div>
+                  {club.interests && (
+                    <div className="club-card-tags">
+                      {club.interests.split(',').map((t) => (
+                        <span key={t} className="tag">{t.trim()}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </Link>
+            );
+          })}
         </div>
       )}
     </div>

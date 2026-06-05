@@ -38,6 +38,7 @@ A feature must meet the **Feature Status Checklist** (see `DEVELOPMENT_RULES.md`
 |--------|---------------------|-----------------------------------------------|
 | DONE   | Create Club Flow    | Authenticated user creates a community        |
 | DONE   | Explore Clubs       | Browse public clubs with real DB data         |
+| DONE   | Private Clubs in Explore | Show private clubs with limited info so users can request to join |
 | DONE   | Club Details Page   | View full club info, member count, owner      |
 | DONE   | Edit Club           | Owner updates club name, description, etc.    |
 | DONE   | Delete Club         | Owner permanently removes a club              |
@@ -198,11 +199,11 @@ Through a deployed full-stack web application with:
 | Category              | Done | Todo | Deferred |
 |-----------------------|------|------|----------|
 | User & Auth           | 4    | 0    | 0        |
-| Club Features         | 8    | 0    | 0        |
+| Club Features         | 9    | 0    | 0        |
 | Discovery             | 3    | 1    | 0        |
 | Collaboration         | 2    | 2    | 0        |
 | Permissions           | 3    | 1    | 0        |
 | QA & Validation       | 4    | 1    | 0        |
 | Deployment/Portfolio  | 0    | 5    | 0        |
 | Out of Scope          | —    | —    | 9        |
-| **Total**             | **24**| **10**| **9** |
+| **Total**             | **25**| **9**| **9** |
