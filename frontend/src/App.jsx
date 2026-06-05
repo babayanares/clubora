@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import { NotificationProvider } from './context/NotificationContext';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -14,6 +15,7 @@ import './App.css';
 function App() {
   return (
     <BrowserRouter>
+      <NotificationProvider>
       <Navbar />
       <main className="main-content">
         <Routes>
@@ -28,6 +30,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
         </Routes>
       </main>
+      </NotificationProvider>
     </BrowserRouter>
   );
 }

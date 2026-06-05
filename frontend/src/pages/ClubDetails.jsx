@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import api from '../api/client';
 import { getUser, isLoggedIn } from '../api/auth';
+import { useNotifications } from '../context/NotificationContext';
 
 function formatDate(iso) {
   return new Date(iso).toLocaleDateString('en-US', {
@@ -41,6 +42,7 @@ export default function ClubDetails() {
   const [postError, setPostError] = useState('');
   const [deleting, setDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const { refresh: refreshNotifications } = useNotifications() || {};
 
   useEffect(() => {
     api.get(`/clubs/${id}`)
@@ -121,6 +123,7 @@ export default function ClubDetails() {
         ),
         _count: { memberships: res.data.memberCount },
       }));
+      refreshNotifications?.();
     } catch (err) {
       setJoinError(err.response?.data?.error || 'Failed to approve.');
     }
@@ -133,6 +136,7 @@ export default function ClubDetails() {
         ...prev,
         memberships: prev.memberships.filter((m) => m.userId !== userId),
       }));
+      refreshNotifications?.();
     } catch (err) {
       setJoinError(err.response?.data?.error || 'Failed to reject.');
     }

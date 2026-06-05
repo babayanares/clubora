@@ -79,6 +79,7 @@ A feature must meet the **Feature Status Checklist** (see `DEVELOPMENT_RULES.md`
 | DONE   | Club Owner Controls      | Owner can edit, delete, manage their club      |
 | DONE   | Private/Public Clubs     | Visibility field stored and enforced on API    |
 | DONE   | Join Approval Flow       | Owner approves join requests for private clubs |
+| DONE   | Join Request Notifications | Bell icon + popup for join request approve/reject flow |
 | TODO   | Basic Admin Panel        | Platform-level moderation tools                |
 
 ---
@@ -115,7 +116,7 @@ These will not be built for the MVP. Any implementation before the above TODO it
 |----------------------------|-------------------------------------------------|
 | Real-time chat             | Requires WebSocket infrastructure               |
 | Push notifications         | Requires service workers / external service     |
-| In-app notifications       | UI complexity beyond MVP                        |
+| In-app notifications (general) | UI complexity beyond MVP — only join approval notifications in scope |
 | Mobile native app          | Separate project track                          |
 | Video / audio calls        | Requires third-party integration                |
 | Advanced AI matching       | Requires ML pipeline                            |
@@ -202,8 +203,8 @@ Through a deployed full-stack web application with:
 | Club Features         | 9    | 0    | 0        |
 | Discovery             | 3    | 1    | 0        |
 | Collaboration         | 2    | 2    | 0        |
-| Permissions           | 3    | 1    | 0        |
+| Permissions           | 4    | 1    | 0        |
 | QA & Validation       | 4    | 1    | 0        |
 | Deployment/Portfolio  | 0    | 5    | 0        |
 | Out of Scope          | —    | —    | 9        |
-| **Total**             | **25**| **9**| **9** |
+| **Total**             | **26**| **9**| **9** |

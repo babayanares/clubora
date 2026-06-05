@@ -17,9 +17,25 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  memberships Membership[]
-  ownedClubs  Club[]       @relation("ClubOwner")
-  posts       Post[]
+  memberships   Membership[]
+  ownedClubs    Club[]         @relation("ClubOwner")
+  posts         Post[]
+  notifications Notification[]
+}
+
+model Notification {
+  id           Int      @id @default(autoincrement())
+  type         String
+  read         Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  userId       Int
+  clubId       Int
+  clubName     String
+  fromUserId   Int
+  fromUserName String
+
+  user         User @relation(fields: [userId], references: [id])
 }
 
 model Club {

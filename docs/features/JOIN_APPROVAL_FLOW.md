@@ -1,6 +1,7 @@
 # JOIN_APPROVAL_FLOW.md
 
 > Feature flow document for Join Approval Flow — private club gating via owner-approved join requests.
+> **Related:** See [NOTIFICATIONS_FLOW.md](./NOTIFICATIONS_FLOW.md) — notifications are created by this flow and delivered via the navbar bell.
 
 ---
 

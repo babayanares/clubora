@@ -2,6 +2,14 @@ const prisma = require('../lib/prisma');
 
 const APPROVED_ONLY = { where: { status: 'approved' } };
 
+async function createNotification(data) {
+  try {
+    await prisma.notification.create({ data });
+  } catch (_) {
+    // non-blocking — don't fail the main request if notification fails
+  }
+}
+
 function parseInterests(raw) {
   if (!raw) return null;
   return raw.split(',').map((t) => t.trim()).filter(Boolean).join(',');
@@ -92,7 +100,7 @@ async function joinClub(req, res, next) {
 
     const club = await prisma.club.findUnique({
       where: { id },
-      select: { id: true, visibility: true },
+      select: { id: true, visibility: true, name: true, ownerId: true },
     });
     if (!club) return res.status(404).json({ error: 'Club not found' });
 
@@ -112,6 +120,21 @@ async function joinClub(req, res, next) {
     const memberCount = await prisma.membership.count({
       where: { clubId: id, status: 'approved' },
     });
+
+    if (isPrivate) {
+      const requester = await prisma.user.findUnique({
+        where: { id: req.user.userId },
+        select: { name: true },
+      });
+      await createNotification({
+        type: 'join_request',
+        userId: club.ownerId,
+        clubId: id,
+        clubName: club.name,
+        fromUserId: req.user.userId,
+        fromUserName: requester?.name || 'Unknown',
+      });
+    }
 
     const statusCode = isPrivate ? 202 : 201;
     res.status(statusCode).json({ membership, memberCount, pending: isPrivate });
@@ -154,7 +177,7 @@ async function approveRequest(req, res, next) {
     const userId = parseInt(req.params.userId, 10);
     if (isNaN(clubId) || isNaN(userId)) return res.status(400).json({ error: 'Invalid ID' });
 
-    const club = await prisma.club.findUnique({ where: { id: clubId }, select: { id: true, ownerId: true } });
+    const club = await prisma.club.findUnique({ where: { id: clubId }, select: { id: true, ownerId: true, name: true } });
     if (!club) return res.status(404).json({ error: 'Club not found' });
     if (club.ownerId !== req.user.userId) return res.status(403).json({ error: 'Only the club owner can do this' });
 
@@ -175,6 +198,22 @@ async function approveRequest(req, res, next) {
       where: { clubId, status: 'approved' },
     });
 
+    const owner = await prisma.user.findUnique({ where: { id: req.user.userId }, select: { name: true } });
+    await createNotification({
+      type: 'request_approved',
+      userId,
+      clubId,
+      clubName: club.name,
+      fromUserId: req.user.userId,
+      fromUserName: owner?.name || 'Club Owner',
+    });
+
+    // Mark the owner's join_request notification for this user as read
+    await prisma.notification.updateMany({
+      where: { userId: req.user.userId, type: 'join_request', clubId, fromUserId: userId },
+      data: { read: true },
+    });
+
     res.json({ membership: updated, memberCount });
   } catch (err) {
     next(err);
@@ -187,7 +226,7 @@ async function rejectRequest(req, res, next) {
     const userId = parseInt(req.params.userId, 10);
     if (isNaN(clubId) || isNaN(userId)) return res.status(400).json({ error: 'Invalid ID' });
 
-    const club = await prisma.club.findUnique({ where: { id: clubId }, select: { id: true, ownerId: true } });
+    const club = await prisma.club.findUnique({ where: { id: clubId }, select: { id: true, ownerId: true, name: true } });
     if (!club) return res.status(404).json({ error: 'Club not found' });
     if (club.ownerId !== req.user.userId) return res.status(403).json({ error: 'Only the club owner can do this' });
 
@@ -200,6 +239,22 @@ async function rejectRequest(req, res, next) {
 
     await prisma.membership.delete({
       where: { userId_clubId: { userId, clubId } },
+    });
+
+    const owner = await prisma.user.findUnique({ where: { id: req.user.userId }, select: { name: true } });
+    await createNotification({
+      type: 'request_rejected',
+      userId,
+      clubId,
+      clubName: club.name,
+      fromUserId: req.user.userId,
+      fromUserName: owner?.name || 'Club Owner',
+    });
+
+    // Mark the owner's join_request notification for this user as read
+    await prisma.notification.updateMany({
+      where: { userId: req.user.userId, type: 'join_request', clubId, fromUserId: userId },
+      data: { read: true },
     });
 
     res.json({ message: 'Request rejected' });

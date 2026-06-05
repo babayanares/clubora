@@ -60,6 +60,7 @@
 | Search clubs         | ✅     | Name search — instant client-side filtering           |
 | Filter by interest   | ✅     | Interest tag chips — toggleable, stacks with search   |
 | Private clubs in Explore | ✅ | Show private clubs with lock icon, limited info, Request to Join |
+| Join request notifications | ✅ | Bell icon + popup — owner notified on request, requester on outcome |
 | Create Club page     | ✅     | Full form with tag input, validation, redirect |
 | Club Details page    | ✅     | Full club view, owner, member count, tags, error states |
 
