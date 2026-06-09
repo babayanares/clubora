@@ -24,6 +24,7 @@ async function createClub(req, res) {
   if (trimmedName.length < 3) return res.status(400).json({ error: 'Club name must be at least 3 characters' });
   if (trimmedName.length > 100) return res.status(400).json({ error: 'Club name must be under 100 characters' });
   if (description && description.length > 500) return res.status(400).json({ error: 'Description must be under 500 characters' });
+  if (location && location.trim().length > 100) return res.status(400).json({ error: 'Location must be under 100 characters' });
 
   const parsedInterests = parseInterests(interests);
   if (!parsedInterests) return res.status(400).json({ error: 'At least one interest is required' });
@@ -279,6 +280,7 @@ async function updateClub(req, res, next) {
     if (trimmedName.length < 3) return res.status(400).json({ error: 'Club name must be at least 3 characters' });
     if (trimmedName.length > 100) return res.status(400).json({ error: 'Club name must be under 100 characters' });
     if (description && description.length > 500) return res.status(400).json({ error: 'Description must be under 500 characters' });
+    if (location && location.trim().length > 100) return res.status(400).json({ error: 'Location must be under 100 characters' });
 
     const parsedInterests = parseInterests(interests);
     if (!parsedInterests) return res.status(400).json({ error: 'At least one interest is required' });

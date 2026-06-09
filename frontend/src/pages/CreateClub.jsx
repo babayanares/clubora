@@ -28,12 +28,37 @@ export default function CreateClub() {
     setErrors({ ...errors, [e.target.name]: '' });
   };
 
+  const validateField = (name, value) => {
+    switch (name) {
+      case 'name':
+        if (!value.trim()) return 'Club name is required';
+        if (value.trim().length < 3) return 'Club name must be at least 3 characters';
+        if (value.trim().length > 100) return 'Club name must be under 100 characters';
+        return '';
+      case 'description':
+        if (value.length > 500) return 'Description must be under 500 characters';
+        return '';
+      case 'location':
+        if (value.trim().length > 100) return 'Location must be under 100 characters';
+        return '';
+      default:
+        return '';
+    }
+  };
+
+  const handleBlur = (e) => {
+    const msg = validateField(e.target.name, e.target.value);
+    setErrors((prev) => ({ ...prev, [e.target.name]: msg }));
+  };
+
   const validate = () => {
     const errs = {};
-    if (!form.name.trim()) errs.name = 'Club name is required';
-    else if (form.name.trim().length < 3) errs.name = 'Club name must be at least 3 characters';
-    else if (form.name.trim().length > 100) errs.name = 'Club name must be under 100 characters';
-    if (form.description.length > 500) errs.description = 'Description must be under 500 characters';
+    const nameErr = validateField('name', form.name);
+    if (nameErr) errs.name = nameErr;
+    const descErr = validateField('description', form.description);
+    if (descErr) errs.description = descErr;
+    const locErr = validateField('location', form.location);
+    if (locErr) errs.location = locErr;
     if (form.interests.length === 0) errs.interests = 'Add at least one interest';
     return errs;
   };
@@ -81,6 +106,7 @@ export default function CreateClub() {
             placeholder="e.g. Weekend Runners"
             value={form.name}
             onChange={handleChange}
+            onBlur={handleBlur}
             maxLength={100}
           />
           {errors.name && <p className="field-error">{errors.name}</p>}
@@ -95,6 +121,7 @@ export default function CreateClub() {
             placeholder="What is this club about? Who should join?"
             value={form.description}
             onChange={handleChange}
+            onBlur={handleBlur}
             rows={4}
             maxLength={500}
           />
@@ -111,7 +138,11 @@ export default function CreateClub() {
             placeholder="e.g. New York, NY or Online"
             value={form.location}
             onChange={handleChange}
+            onBlur={handleBlur}
+            maxLength={100}
           />
+          {errors.location && <p className="field-error">{errors.location}</p>}
+          <p className="field-hint">{form.location.length}/100</p>
         </div>
 
         <div className="form-group">

@@ -41,6 +41,8 @@ Club creation is the core supply-side action in Clubora. Without clubs being cre
 - Inline character counters for name (100 max) and description (500 max)
 - Interest tag input: press Enter or comma to add a tag; click × to remove; quick-add suggestion chips
 - Client-side validation before submission — errors shown per field
+- Per-field onBlur validation — each field validates when the user leaves it, not just on submit
+- Errors clear immediately when the user starts typing in a field (onChange)
 - Button disabled and shows "Creating club…" while request is in flight
 - API error shown in a banner below the form if the request fails
 - On success: navigate to `/explore`
@@ -97,7 +99,7 @@ prisma.membership.create({
 |-------------|----------------------------------------------------------------|
 | name        | Required. Min 3 chars (after trim). Max 100 chars.            |
 | description | Optional. Max 500 chars.                                       |
-| location    | Optional. No length limit enforced (kept short by UX).        |
+| location    | Optional. Max 100 chars.                                       |
 | interests   | Required. At least one non-empty tag after parsing.           |
 | visibility  | Must be "public" or "private". Defaults to "public".         |
 
@@ -149,6 +151,7 @@ Success (201):
 | Name too short              | 400         | `"Club name must be at least 3 characters"`  |
 | Name too long               | 400         | `"Club name must be under 100 characters"`   |
 | Description too long        | 400         | `"Description must be under 500 characters"` |
+| Location too long           | 400         | `"Location must be under 100 characters"`    |
 | No interests provided       | 400         | `"At least one interest is required"`        |
 | Server error                | 500         | `"Something went wrong, please try again"`   |
 
@@ -181,6 +184,7 @@ User fills form → clicks Create Club
 - `ownerId` sent in request body — ignored; server always uses JWT value
 - User navigates to `/clubs/new` without auth — immediate redirect to `/login`
 - Double-click on submit — button disabled after first click until response
+- Location over 100 chars — rejected with 400 on backend; field error shown on frontend via onBlur
 - Visibility value not in allowed set — silently defaulted to "public"
 
 ---
@@ -200,10 +204,19 @@ User fills form → clicks Create Club
 - [ ] Submit with no interests added → field error shown
 - [ ] Navigate to /clubs/new without login → redirected to /login
 
+**Per-field onBlur validation tests:**
+- [ ] Leave name field empty → "Club name is required" shown immediately on blur
+- [ ] Type 1 char in name then leave → "Club name must be at least 3 characters" shown on blur
+- [ ] Type 101+ chars in name then leave → "Club name must be under 100 characters" shown on blur
+- [ ] Type 501+ chars in description then leave → "Description must be under 500 characters" shown on blur
+- [ ] Type 101+ chars in location then leave → "Location must be under 100 characters" shown on blur
+- [ ] Start typing after an error → error clears immediately (onChange)
+
 **Validation tests:**
-- [ ] Whitespace-only name rejected
-- [ ] Name over 100 chars rejected (API + character counter in UI)
-- [ ] Description over 500 chars rejected (API + character counter in UI)
+- [ ] Whitespace-only name rejected (frontend + backend)
+- [ ] Name over 100 chars rejected (frontend onBlur + backend 400 + character counter)
+- [ ] Description over 500 chars rejected (frontend onBlur + backend 400 + character counter)
+- [ ] Location over 100 chars rejected (frontend onBlur + backend 400 + character counter)
 - [ ] Extra fields in request body (e.g. ownerId) ignored by backend
 
 **Database verification (via Prisma Studio):**

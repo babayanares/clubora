@@ -132,7 +132,21 @@
 ### N6 — Description over maximum length
 
 **Input:** Valid name + description with 501+ characters
-**Expected:** 400 — Description is too long
+**Expected:** 400 — Description must be under 500 characters
+
+---
+
+### N7 — Location over maximum length
+
+**Input:**
+```json
+{
+  "name": "Valid Club",
+  "interests": "test",
+  "location": "<101-character string>"
+}
+```
+**Expected:** 400 — Location must be under 100 characters
 
 ---
 
@@ -182,9 +196,20 @@
 - [ ] Submit button is re-enabled after response (success or error)
 - [ ] Error message is shown when name field is empty (client-side validation)
 - [ ] Error from API (e.g. 401) is shown to the user, not swallowed
-- [ ] On success, user is redirected to `/clubs/:id` of the new club
+- [ ] On success, user is redirected to `/explore`
 - [ ] Page is not accessible to logged-out users (should redirect to `/login`)
 - [ ] Form fields are cleared if user navigates back and creates again
+
+### Per-field onBlur validation
+
+- [ ] Leave name empty → "Club name is required" shown immediately on blur
+- [ ] Type "AB" in name then tab away → "Club name must be at least 3 characters" shown
+- [ ] Type a 101-char name then tab away → "Club name must be under 100 characters" shown
+- [ ] Type 501 chars in description then tab away → "Description must be under 500 characters" shown
+- [ ] Type 101 chars in location then tab away → "Location must be under 100 characters" shown
+- [ ] Start typing in a field with an existing error → error clears immediately
+- [ ] Location field shows character counter (x/100)
+- [ ] Location field enforces maxLength={100} (cannot type beyond 100 chars)
 
 ---
 
@@ -194,6 +219,7 @@
 - [ ] `ownerId` is taken from JWT, not from request body
 - [ ] Name trimming happens before validation
 - [ ] All validation errors return 400 with a descriptive message
+- [ ] Location over 100 chars returns 400 — Location must be under 100 characters
 - [ ] Successful create returns 201 with the full club object
 - [ ] Response does not include sensitive fields (e.g. owner's password)
 
