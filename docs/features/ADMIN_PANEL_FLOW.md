@@ -14,7 +14,7 @@ As the platform grows, there must be a way to see its overall health and remove 
 
 1. Admin navigates to `/admin`
 2. If not logged in → redirected to `/login`
-3. If logged in but not admin → redirected to `/dashboard`
+3. If logged in but not admin → API returns 403; page shows "Access denied. Admin accounts only." (no silent redirect)
 4. Admin sees four stat cards: total users, clubs, posts, active memberships
 5. Admin sees a full clubs table: name, owner, visibility, member count, post count, delete button
 6. Admin sees a full users table: name, email, role badge, clubs owned, clubs joined
@@ -27,13 +27,14 @@ As the platform grows, there must be a way to see its overall health and remove 
 ## Frontend Responsibilities
 
 **`pages/AdminPanel.jsx`** — new page at `/admin`
-- On mount: read user from localStorage; if no user or `user.role !== 'admin'` → `navigate('/dashboard')`
+- On mount: if not logged in → `navigate('/login')`; otherwise attempt all three API fetches
+- Authorization is enforced by the backend (403 = "Access denied. Admin accounts only.") — no client-side role redirect, prevents stale-localStorage false blocks
 - Fetch in parallel: `GET /api/admin/stats`, `GET /api/admin/clubs`, `GET /api/admin/users`
-- Loading state while fetching; error state if any fetch fails
+- Loading state while fetching; error state if any fetch fails (including 403)
 - Stat cards: Users, Clubs, Posts, Active Memberships
 - Clubs table: Name, Owner, Visibility, Members, Posts, Delete action
 - Users table: Name, Email, Role, Clubs Owned, Clubs Joined
-- Delete: two-step inline confirm per row (same pattern as club owner delete)
+- Delete: two-step inline confirm per row — no `onBlur` reset; confirm state persists until second click fires
 - After delete: remove club from local state + decrement stats
 
 **`components/Navbar.jsx`** — add Admin link
@@ -84,8 +85,8 @@ All routes: `requireAuth` + `requireAdmin`
 
 | Rule | Enforcement |
 |------|-------------|
-| `/admin` page only accessible to admin users | Frontend redirect + backend 403 |
-| Admin role checked on every backend request | `requireAdmin` middleware via DB-sourced JWT claim |
+| `/admin` page only accessible to admin users | Backend 403 → page shows error (no silent frontend redirect — avoids stale localStorage false-blocks) |
+| Admin role checked on every backend request | `requireAdmin` middleware reads role from JWT claim |
 | Delete target must exist | 404 if club not found |
 | Non-numeric club ID | 400 — invalid ID |
 
@@ -95,7 +96,8 @@ All routes: `requireAuth` + `requireAdmin`
 
 | Scenario | Expected behavior |
 |----------|-------------------|
-| Non-admin visits `/admin` | Redirected to `/dashboard` |
+| Non-admin visits `/admin` | API returns 403; page shows "Access denied. Admin accounts only." |
+| User with stale localStorage token (no role field) visits `/admin` | Same as non-admin — 403 from API, error shown; fix is to log out and back in |
 | Unauthenticated user visits `/admin` | Redirected to `/login` (via 401 interceptor) |
 | Admin deletes a club they also own | Works — same cascade delete |
 | Admin deletes a club with no posts/members | Works — deleteMany with no rows is a no-op |
@@ -106,7 +108,7 @@ All routes: `requireAuth` + `requireAdmin`
 
 ## QA Checklist
 
-- [ ] `/admin` redirects non-admin logged-in users to `/dashboard`
+- [ ] `/admin` shows "Access denied. Admin accounts only." for logged-in non-admin users (no redirect)
 - [ ] `/admin` redirects unauthenticated users to `/login`
 - [ ] Admin sees correct stat counts (users, clubs, posts, memberships)
 - [ ] All clubs appear in the clubs table with correct owner and counts

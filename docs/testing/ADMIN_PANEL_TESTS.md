@@ -102,13 +102,14 @@ curl -s http://localhost:5000/api/admin/users \
 | Scenario | Expected | Pass? |
 |----------|----------|-------|
 | Visit `/admin` when not logged in | Redirected to `/login` | |
-| Visit `/admin` as regular user | Redirected to `/dashboard` | |
+| Visit `/admin` as regular user | Shows "Access denied. Admin accounts only." (no redirect) | |
+| Visit `/admin` with stale token (no role field) | Shows "Access denied. Admin accounts only." — log out and back in to fix | |
 | Visit `/admin` as admin | Admin panel shown with stats and tables | |
 | Stat cards show correct counts | All 4 stats match DB | |
 | All clubs shown in clubs table | Names, owners, visibility, counts correct | |
 | All users shown in users table | Name, email, role badge, counts correct | |
 | Admin has "admin" role badge (purple) | Distinct from "user" badge (green) | |
-| Delete first click | Shows "Confirm Delete?" text | |
+| Delete first click | Shows "Confirm Delete?" text — persists until second click (no onBlur reset) | |
 | Delete confirm click | Club removed from table, club count decrements | |
 | Deleted club no longer in Explore | Correct cascade delete | |
 | Admin link visible in Navbar | Only shown for admin role | |
