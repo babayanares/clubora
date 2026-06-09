@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git commit -m ' *)",
+      "Bash(curl -s http://localhost:5173 -o /dev/null -w \"%{http_code}\")",
+      "Bash(curl -s -X POST http://localhost:5000/api/auth/login -H 'Content-Type: application/json' -d '{\"email\":\"admin@clubora.com\",\"password\":\"Admin123!\"}')",
+      "Bash(python -m json.tool)",
+      "Bash(node -e ' *)",
+      "Bash(curl -s http://localhost:5000/api/admin/stats -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE2LCJuYW1lIjoiQ2x1Ym9yYSBBZG1pbiIsImVtYWlsIjoiYWRtaW5AY2x1Ym9yYS5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTc4MTAwNjY3MCwiZXhwIjoxNzgxNjExNDcwfQ.SXOrRpgSbcO0mtdb65OPYtLsbGufe6c5X26phWSiNVA\")",
+      "Bash(netstat -ano)",
+      "Bash(findstr \":5000\")",
+      "Bash(findstr \"LISTENING\")",
+      "Bash(wmic process *)",
+      "Bash(tasklist /FI \"IMAGENAME eq node.exe\" /FO TABLE)",
+      "Bash(curl -s -X POST http://localhost:5000/api/auth/register -H 'Content-Type: application/json' -d '{\"name\":\"Test Role Check\",\"email\":\"rolecheck_temp@test.com\",\"password\":\"Password123\"}')",
+      "Bash(cat backend/prisma/prisma.config.ts)",
+      "Bash(cat backend/prisma.config.ts)"
+    ]
+  }
+}
