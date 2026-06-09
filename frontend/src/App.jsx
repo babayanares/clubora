@@ -10,6 +10,7 @@ import ClubDetails from './pages/ClubDetails';
 import CreateClub from './pages/CreateClub';
 import EditClub from './pages/EditClub';
 import Profile from './pages/Profile';
+import AdminPanel from './pages/AdminPanel';
 import './App.css';
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
           <Route path="/clubs/new" element={<CreateClub />} />
           <Route path="/clubs/:id/edit" element={<EditClub />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/admin" element={<AdminPanel />} />
         </Routes>
       </main>
       </NotificationProvider>

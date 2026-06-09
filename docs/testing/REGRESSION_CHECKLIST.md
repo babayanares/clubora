@@ -134,6 +134,7 @@ When a feature is completed, run just the sections relevant to what was touched:
 | Create Club        | 2, 4, 5, 6, 7, 8, 9             |
 | Explore Clubs      | 2, 5, 6, 8                      |
 | User Profile       | 2, 6, 7, 8, 9                   |
+| Admin Panel        | 2, 3, 6, 7, 8                   |
 | Any DB migration   | 7 (full)                        |
 | Any route change   | 6, relevant feature sections    |
 

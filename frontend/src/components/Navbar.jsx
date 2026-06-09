@@ -22,6 +22,7 @@ export default function Navbar() {
             <Link to="/clubs/new">Create Club</Link>
             <Link to="/dashboard">Dashboard</Link>
             <Link to="/profile">{user?.name || 'Profile'}</Link>
+            {user?.role === 'admin' && <Link to="/admin">Admin</Link>}
             <NotificationBell />
             <button className="nav-logout" onClick={handleLogout}>Log Out</button>
           </>

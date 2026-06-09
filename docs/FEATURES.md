@@ -63,6 +63,7 @@
 | Join request notifications | ✅ | Bell icon + popup — owner notified on request, requester on outcome |
 | Create Club page     | ✅     | Full form with tag input, validation, redirect |
 | Club Details page    | ✅     | Full club view, owner, member count, tags, error states |
+| Admin Panel          | ✅     | `/admin` — stats, club list with delete, user list; admin-only |
 
 ---
 
@@ -94,3 +95,4 @@ Each MVP feature has a detailed flow document in `/docs/features/`:
 - [MY_CLUBS_FLOW.md](./features/MY_CLUBS_FLOW.md)
 - [LEAVE_CLUB_FLOW.md](./features/LEAVE_CLUB_FLOW.md)
 - [CLUB_POSTS_FLOW.md](./features/CLUB_POSTS_FLOW.md)
+- [ADMIN_PANEL_FLOW.md](./features/ADMIN_PANEL_FLOW.md)

@@ -130,6 +130,12 @@ The URL must use an **absolute path** (resolved via `path.resolve`), not a relat
 |----------------------------------------------------------------|------------|------------------------------------------------|
 | 20260525_init                                                  | 2026-05-25 | Initial schema: User, Club, Membership         |
 | 20260526_add_location_interests_visibility_to_club             | 2026-05-26 | Added location, interests, visibility to Club  |
+| 20260527194430_add_bio_location_to_user                        | 2026-05-27 | Added bio, location to User                    |
+| 20260530205355_add_interests_to_user                           | 2026-05-30 | Added interests to User                        |
+| 20260604201310_add_post_model                                  | 2026-06-04 | Added Post model                               |
+| 20260605162824_add_status_to_membership                        | 2026-06-05 | Added status field to Membership (pending/approved) |
+| 20260605172037_add_notification_model                          | 2026-06-05 | Added Notification model                       |
+| 20260609112158_add_role_to_user                                | 2026-06-09 | Added role field to User ("user" \| "admin", default "user") |
 
 **Migration 2 notes:**
 - `location` — optional string; city/place or "Online"

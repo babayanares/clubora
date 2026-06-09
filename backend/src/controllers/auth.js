@@ -4,7 +4,7 @@ const prisma = require('../lib/prisma');
 
 function makeToken(user) {
   return jwt.sign(
-    { userId: user.id, name: user.name, email: user.email },
+    { userId: user.id, name: user.name, email: user.email, role: user.role || 'user' },
     process.env.JWT_SECRET,
     { expiresIn: '7d' }
   );
@@ -33,7 +33,7 @@ async function register(req, res) {
     data: { name: name.trim(), email: email.toLowerCase(), password: hashed },
   });
 
-  res.status(201).json({ token: makeToken(user), user: { id: user.id, name: user.name, email: user.email } });
+  res.status(201).json({ token: makeToken(user), user: { id: user.id, name: user.name, email: user.email, role: user.role } });
 }
 
 async function login(req, res) {
@@ -53,7 +53,7 @@ async function login(req, res) {
     return res.status(401).json({ error: 'Invalid email or password' });
   }
 
-  res.json({ token: makeToken(user), user: { id: user.id, name: user.name, email: user.email } });
+  res.json({ token: makeToken(user), user: { id: user.id, name: user.name, email: user.email, role: user.role } });
 }
 
 module.exports = { register, login };

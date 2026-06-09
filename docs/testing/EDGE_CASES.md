@@ -66,6 +66,9 @@
 | Token for a user ID that no longer exists    | 401 or 404 — handle gracefully     | 📋     |
 | User tries to edit another user's profile    | 403 — forbidden                    | 📋     |
 | User tries to delete a club they don't own   | 403 — forbidden                    | 📋     |
+| Non-admin user calls any /api/admin/* route  | 403 — Admin access required        | ✅     |
+| Admin visits /admin page                     | Admin panel shown                  | ✅     |
+| Regular user visits /admin page              | Redirected to /dashboard           | ✅     |
 
 ---
 
