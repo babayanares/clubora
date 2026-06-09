@@ -19,8 +19,6 @@ export default function AdminPanel() {
 
   useEffect(() => {
     if (!isLoggedIn()) { navigate('/login'); return; }
-    const user = getUser();
-    if (user?.role !== 'admin') { navigate('/dashboard'); return; }
 
     Promise.all([
       api.get('/admin/stats'),
@@ -32,7 +30,13 @@ export default function AdminPanel() {
         setClubs(clubsRes.data.clubs);
         setUsers(usersRes.data.users);
       })
-      .catch(() => setError('Failed to load admin data. Please try again.'))
+      .catch((err) => {
+        if (err.response?.status === 403) {
+          setError('Access denied. Admin accounts only.');
+        } else {
+          setError('Failed to load admin data. Please try again.');
+        }
+      })
       .finally(() => setLoading(false));
   }, [navigate]);
 
@@ -123,7 +127,6 @@ export default function AdminPanel() {
                         style={{ padding: '0.3rem 0.75rem', fontSize: '0.82rem' }}
                         onClick={() => handleDelete(club.id)}
                         disabled={deleting && confirmDelete === club.id}
-                        onBlur={() => setConfirmDelete(null)}
                       >
                         {deleting && confirmDelete === club.id
                           ? 'Deleting…'
