@@ -20,7 +20,9 @@ The Join Approval Flow (Step 13) requires the owner to discover new requests. Cu
 
 | Type | Recipient | Triggered by | Content |
 |------|-----------|--------------|---------|
-| `join_request` | Club owner | User requests to join a private club | "[Name] wants to join [Club]" |
+| `join_request` | Club owner | User requests to join a private club | "[Name] wants to join [Club]" — shows Approve / Reject buttons |
+| `join_request_owner_approved` | Club owner | Owner approves the request (converted from `join_request`) | "You accepted [Name] to join [Club]" — history record, no buttons |
+| `join_request_owner_rejected` | Club owner | Owner rejects the request (converted from `join_request`) | "You rejected [Name]'s request to join [Club]" — history record, no buttons |
 | `request_approved` | Requester | Owner approves their request | "Your request to join [Club] was approved!" |
 | `request_rejected` | Requester | Owner rejects their request | "Your request to join [Club] was not approved." |
 
@@ -56,10 +58,12 @@ The Join Approval Flow (Step 13) requires the owner to discover new requests. Cu
 - Click → toggle popup open/closed; mark all as read on open
 - Popup lists notifications newest first:
   - `join_request`: "[Name] wants to join [Club]" + Approve / Reject buttons
+  - `join_request_owner_approved`: "You accepted [Name] to join [Club]" (green, no buttons — history)
+  - `join_request_owner_rejected`: "You rejected [Name]'s request to join [Club]" (muted, no buttons — history)
   - `request_approved`: "Your request to join [Club] was approved ✓" (green)
   - `request_rejected`: "Your request to join [Club] was not approved." (muted)
 - Approve/Reject in popup call the same `/api/clubs/:id/requests/:userId/approve|reject` endpoints
-- After action: notification disappears from popup, club detail join requests section syncs via context
+- After action: notification converts to a history record in-place (no buttons), context refreshed
 
 **`Navbar.jsx`** — add `NotificationBell` for logged-in users
 
@@ -79,8 +83,8 @@ The Join Approval Flow (Step 13) requires the owner to discover new requests. Cu
 
 **Updated: `controllers/clubs.js`**
 - `joinClub` — after creating pending membership, create `join_request` notification for club owner
-- `approveRequest` — after approving, create `request_approved` notification for requester; mark owner's `join_request` notification for this user as read
-- `rejectRequest` — after rejecting, create `request_rejected` notification for requester; mark owner's `join_request` notification for this user as read
+- `approveRequest` — after approving, create `request_approved` notification for requester; convert owner's `join_request` to `join_request_owner_approved` (read: true)
+- `rejectRequest` — after rejecting, create `request_rejected` notification for requester; convert owner's `join_request` to `join_request_owner_rejected` (read: true)
 
 ---
 
@@ -91,7 +95,7 @@ New model:
 ```prisma
 model Notification {
   id           Int      @id @default(autoincrement())
-  type         String   // 'join_request' | 'request_approved' | 'request_rejected'
+  type         String   // 'join_request' | 'join_request_owner_approved' | 'join_request_owner_rejected' | 'request_approved' | 'request_rejected'
   read         Boolean  @default(false)
   createdAt    DateTime @default(now())
 
@@ -177,8 +181,8 @@ This gives the best sync possible without WebSockets or a global state library.
 
 - [ ] Bell badge shows unread count after a join request is made
 - [ ] Owner sees join_request notification in popup with requester name and club name
-- [ ] Owner can Approve from bell popup — membership approved, bell notification disappears, requester notified
-- [ ] Owner can Reject from bell popup — membership deleted, bell notification disappears, requester notified
+- [ ] Owner can Approve from bell popup — membership approved, notification converts to "You accepted X to join Y" (no buttons), requester notified
+- [ ] Owner can Reject from bell popup — membership deleted, notification converts to "You rejected X's request to join Y" (no buttons), requester notified
 - [ ] After acting from popup, club detail join requests section no longer shows the request on next load
 - [ ] After acting from club detail page, bell unread count updates
 - [ ] Requester sees request_approved notification in their bell after approval

@@ -90,8 +90,9 @@ curl -s http://localhost:5000/api/notifications \
 | Click bell | Popup opens, all notifications shown | |
 | Bell opened | All marked read, badge disappears | |
 | join_request notification in popup | Shows requester name, club name, Approve + Reject buttons | |
-| Click Approve in popup | Membership approved, notification removed from popup, requester notified | |
-| Click Reject in popup | Membership deleted, notification removed from popup, requester notified | |
+| Click Approve in popup | Membership approved, notification converts to "You accepted X to join Y" (no buttons), requester notified | |
+| Click Reject in popup | Membership deleted, notification converts to "You rejected X's request to join Y" (no buttons), requester notified | |
+| Reopen bell after approve/reject | History record still present (persisted in DB with updated type) | |
 | request_approved notification | Green "approved" message shown | |
 | request_rejected notification | Muted "not approved" message shown | |
 | No notifications | Empty state shown in popup | |

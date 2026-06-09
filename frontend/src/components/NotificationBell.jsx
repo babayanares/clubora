@@ -26,7 +26,6 @@ export default function NotificationBell() {
     setActionError('');
     try {
       await api.patch(`/clubs/${notification.clubId}/requests/${notification.fromUserId}/approve`);
-      dismiss(notification.id);
       refresh();
     } catch (err) {
       setActionError(err.response?.data?.error || 'Failed to approve.');
@@ -37,7 +36,6 @@ export default function NotificationBell() {
     setActionError('');
     try {
       await api.delete(`/clubs/${notification.clubId}/requests/${notification.fromUserId}/reject`);
-      dismiss(notification.id);
       refresh();
     } catch (err) {
       setActionError(err.response?.data?.error || 'Failed to reject.');
@@ -73,6 +71,16 @@ export default function NotificationBell() {
                         <button className="btn btn-danger"  style={{ padding: '0.3rem 0.75rem', fontSize: '0.82rem' }} onClick={() => handleReject(n)}>Reject</button>
                       </div>
                     </div>
+                  )}
+                  {n.type === 'join_request_owner_approved' && (
+                    <p className="notif-text notif-approved">
+                      ✓ You accepted <strong>{n.fromUserName}</strong> to join <strong>{n.clubName}</strong>
+                    </p>
+                  )}
+                  {n.type === 'join_request_owner_rejected' && (
+                    <p className="notif-text notif-rejected">
+                      You rejected <strong>{n.fromUserName}</strong>'s request to join <strong>{n.clubName}</strong>
+                    </p>
                   )}
                   {n.type === 'request_approved' && (
                     <p className="notif-text notif-approved">

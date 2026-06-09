@@ -208,10 +208,10 @@ async function approveRequest(req, res, next) {
       fromUserName: owner?.name || 'Club Owner',
     });
 
-    // Mark the owner's join_request notification for this user as read
+    // Mark the owner's join_request notification as read and convert to history record
     await prisma.notification.updateMany({
       where: { userId: req.user.userId, type: 'join_request', clubId, fromUserId: userId },
-      data: { read: true },
+      data: { read: true, type: 'join_request_owner_approved' },
     });
 
     res.json({ membership: updated, memberCount });
@@ -251,10 +251,10 @@ async function rejectRequest(req, res, next) {
       fromUserName: owner?.name || 'Club Owner',
     });
 
-    // Mark the owner's join_request notification for this user as read
+    // Mark the owner's join_request notification as read and convert to history record
     await prisma.notification.updateMany({
       where: { userId: req.user.userId, type: 'join_request', clubId, fromUserId: userId },
-      data: { read: true },
+      data: { read: true, type: 'join_request_owner_rejected' },
     });
 
     res.json({ message: 'Request rejected' });
