@@ -52,6 +52,21 @@ curl -s http://localhost:5000/api/notifications \
 # Expected: 0
 ```
 
+### Notification created on public join (new_member)
+
+```bash
+# User joins a public club
+curl -s -X POST http://localhost:5000/api/clubs/<public_id>/join \
+  -H "Authorization: Bearer <user_token>" | jq .
+
+# Owner fetches notifications
+curl -s http://localhost:5000/api/notifications \
+  -H "Authorization: Bearer <owner_token>" | jq .
+# Expected: { notifications: [{ type: 'new_member', read: false, fromUserName: '...' }], unreadCount: 1 }
+```
+
+---
+
 ### Notification created on approval
 
 ```bash
@@ -89,6 +104,7 @@ curl -s http://localhost:5000/api/notifications \
 | Logged in, unread notifications | Bell shown with red badge count | |
 | Click bell | Popup opens, all notifications shown | |
 | Bell opened | All marked read, badge disappears | |
+| new_member notification in popup | Shows "[Name] joined [Club]" — no action buttons | |
 | join_request notification in popup | Shows requester name, club name, Approve + Reject buttons | |
 | Click Approve in popup | Membership approved, notification converts to "You accepted X to join Y" (no buttons), requester notified | |
 | Click Reject in popup | Membership deleted, notification converts to "You rejected X's request to join Y" (no buttons), requester notified | |
@@ -106,7 +122,7 @@ curl -s http://localhost:5000/api/notifications \
 - [ ] Club detail Join Requests section still works independently
 - [ ] Approving from club detail creates request_approved notification for requester
 - [ ] Rejecting from club detail creates request_rejected notification for requester
-- [ ] Public club joins do NOT create any notifications
+- [ ] Public club joins create a `new_member` notification for the owner
 
 ---
 

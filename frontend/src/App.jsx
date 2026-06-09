@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import { NotificationProvider } from './context/NotificationContext';
 import Landing from './pages/Landing';
@@ -13,12 +13,13 @@ import Profile from './pages/Profile';
 import AdminPanel from './pages/AdminPanel';
 import './App.css';
 
-function App() {
+function AppShell() {
+  const location = useLocation();
+  const isLanding = location.pathname === '/';
   return (
-    <BrowserRouter>
-      <NotificationProvider>
+    <>
       <Navbar />
-      <main className="main-content">
+      <main className={isLanding ? '' : 'main-content'}>
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
@@ -32,6 +33,15 @@ function App() {
           <Route path="/admin" element={<AdminPanel />} />
         </Routes>
       </main>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <NotificationProvider>
+        <AppShell />
       </NotificationProvider>
     </BrowserRouter>
   );

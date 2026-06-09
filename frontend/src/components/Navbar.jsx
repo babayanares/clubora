@@ -1,11 +1,13 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { isLoggedIn, clearAuth, getUser } from '../api/auth';
 import NotificationBell from './NotificationBell';
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const loggedIn = isLoggedIn();
   const user = getUser();
+  const isLanding = location.pathname === '/';
 
   const handleLogout = () => {
     clearAuth();
@@ -13,7 +15,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="navbar">
+    <nav className={`navbar${isLanding ? ' navbar--landing' : ''}`}>
       <Link to="/" className="navbar-brand">Clubora</Link>
       <div className="navbar-links">
         <Link to="/explore">Explore</Link>

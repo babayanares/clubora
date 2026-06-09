@@ -59,6 +59,14 @@ curl -s -X POST http://localhost:5000/api/clubs/2/join \
 # Expected: 403 — "This club is private"
 ```
 
+**Owner receives new_member notification:**
+```bash
+# After a successful public join, owner fetches notifications
+curl -s http://localhost:5000/api/notifications \
+  -H "Authorization: Bearer <owner_token>" | jq '.notifications[0]'
+# Expected: { type: 'new_member', read: false, fromUserName: '<joiner name>', clubName: '<club name>' }
+```
+
 ---
 
 ### GET /api/clubs/:id (updated)
@@ -87,6 +95,7 @@ curl -s http://localhost:5000/api/clubs/1 | jq '.club._count.memberships'
 | Logged in, already a member | "Joined ✓" shown (disabled) | |
 | Click "Join Club" | Button shows loading state | |
 | Successful join | Member count increments, button → "Joined ✓" | |
+| After join | Club owner's bell shows new_member notification | |
 | Network error on join | Error message shown, button resets | |
 | Double-click join | Only one request sent (button disabled) | |
 | Private club | No join button — "Private Club" label shown | |

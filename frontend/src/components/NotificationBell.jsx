@@ -82,6 +82,11 @@ export default function NotificationBell() {
                       You rejected <strong>{n.fromUserName}</strong>'s request to join <strong>{n.clubName}</strong>
                     </p>
                   )}
+                  {n.type === 'new_member' && (
+                    <p className="notif-text">
+                      <strong>{n.fromUserName}</strong> joined <strong>{n.clubName}</strong>
+                    </p>
+                  )}
                   {n.type === 'request_approved' && (
                     <p className="notif-text notif-approved">
                       ✓ Your request to join <strong>{n.clubName}</strong> was approved!

@@ -154,6 +154,7 @@ User views /clubs/:id (not a member)
 → 201 response with membership + memberCount
 → Button changes to "Joined ✓"
 → Member count increments on page (no reload)
+→ Club owner receives new_member notification in bell
 ```
 
 ---
@@ -185,7 +186,5 @@ User views /clubs/:id (not a member)
 
 ## Future Improvements
 
-- Join approval flow for private clubs (owner accepts/rejects requests)
 - Leave club action (step 8 in implementation order)
 - Member list shown on club detail page
-- Notification to club owner when someone joins

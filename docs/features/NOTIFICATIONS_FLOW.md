@@ -20,6 +20,7 @@ The Join Approval Flow (Step 13) requires the owner to discover new requests. Cu
 
 | Type | Recipient | Triggered by | Content |
 |------|-----------|--------------|---------|
+| `new_member` | Club owner | User joins a public club | "[Name] joined [Club]" — informational, no buttons |
 | `join_request` | Club owner | User requests to join a private club | "[Name] wants to join [Club]" — shows Approve / Reject buttons |
 | `join_request_owner_approved` | Club owner | Owner approves the request (converted from `join_request`) | "You accepted [Name] to join [Club]" — history record, no buttons |
 | `join_request_owner_rejected` | Club owner | Owner rejects the request (converted from `join_request`) | "You rejected [Name]'s request to join [Club]" — history record, no buttons |
@@ -57,6 +58,7 @@ The Join Approval Flow (Step 13) requires the owner to discover new requests. Cu
 - Bell icon (🔔) with red badge showing unread count
 - Click → toggle popup open/closed; mark all as read on open
 - Popup lists notifications newest first:
+  - `new_member`: "[Name] joined [Club]" (neutral, no buttons)
   - `join_request`: "[Name] wants to join [Club]" + Approve / Reject buttons
   - `join_request_owner_approved`: "You accepted [Name] to join [Club]" (green, no buttons — history)
   - `join_request_owner_rejected`: "You rejected [Name]'s request to join [Club]" (muted, no buttons — history)
@@ -82,7 +84,7 @@ The Join Approval Flow (Step 13) requires the owner to discover new requests. Cu
 - `PATCH /api/notifications/read-all` — marks all of current user's notifications as read
 
 **Updated: `controllers/clubs.js`**
-- `joinClub` — after creating pending membership, create `join_request` notification for club owner
+- `joinClub` — after creating membership, notify owner: `new_member` for public clubs, `join_request` for private clubs
 - `approveRequest` — after approving, create `request_approved` notification for requester; convert owner's `join_request` to `join_request_owner_approved` (read: true)
 - `rejectRequest` — after rejecting, create `request_rejected` notification for requester; convert owner's `join_request` to `join_request_owner_rejected` (read: true)
 
@@ -161,7 +163,8 @@ This gives the best sync possible without WebSockets or a global state library.
 
 ## Validation Rules
 
-- Notifications are only created for `join_request` on private clubs
+- `new_member` notification is created when a user successfully joins a public club
+- `join_request` notification is created when a user requests to join a private club
 - No notification created if the user is already a member (409 is returned before notification logic)
 - `read-all` only marks the authenticated user's own notifications
 
@@ -179,6 +182,8 @@ This gives the best sync possible without WebSockets or a global state library.
 
 ## QA Checklist
 
+- [ ] Bell badge shows unread count after someone joins a public club
+- [ ] Owner sees new_member notification in popup: "[Name] joined [Club]" (no action buttons)
 - [ ] Bell badge shows unread count after a join request is made
 - [ ] Owner sees join_request notification in popup with requester name and club name
 - [ ] Owner can Approve from bell popup — membership approved, notification converts to "You accepted X to join Y" (no buttons), requester notified

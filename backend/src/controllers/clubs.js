@@ -122,20 +122,19 @@ async function joinClub(req, res, next) {
       where: { clubId: id, status: 'approved' },
     });
 
-    if (isPrivate) {
-      const requester = await prisma.user.findUnique({
-        where: { id: req.user.userId },
-        select: { name: true },
-      });
-      await createNotification({
-        type: 'join_request',
-        userId: club.ownerId,
-        clubId: id,
-        clubName: club.name,
-        fromUserId: req.user.userId,
-        fromUserName: requester?.name || 'Unknown',
-      });
-    }
+    const joiner = await prisma.user.findUnique({
+      where: { id: req.user.userId },
+      select: { name: true },
+    });
+
+    await createNotification({
+      type: isPrivate ? 'join_request' : 'new_member',
+      userId: club.ownerId,
+      clubId: id,
+      clubName: club.name,
+      fromUserId: req.user.userId,
+      fromUserName: joiner?.name || 'Unknown',
+    });
 
     const statusCode = isPrivate ? 202 : 201;
     res.status(statusCode).json({ membership, memberCount, pending: isPrivate });

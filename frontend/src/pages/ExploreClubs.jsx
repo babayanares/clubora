@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/client';
 
@@ -8,12 +8,26 @@ export default function ExploreClubs() {
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
   const [activeInterest, setActiveInterest] = useState('');
+  const [searchFocused, setSearchFocused] = useState(false);
+  const searchRef = useRef(null);
 
   useEffect(() => {
     api.get('/clubs')
       .then((res) => setClubs(res.data.clubs))
       .catch(() => setError('Failed to load clubs. Please refresh the page.'))
       .finally(() => setLoading(false));
+  }, []);
+
+  // Press "/" anywhere on the page to focus the search bar
+  useEffect(() => {
+    function onKey(e) {
+      if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        searchRef.current?.focus();
+      }
+    }
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
   }, []);
 
   // Collect unique interest tags from all clubs
@@ -56,9 +70,9 @@ export default function ExploreClubs() {
       <div className="page-header">
         <div>
           <h2>Explore Clubs</h2>
-          {filtersActive && (
-            <p className="page-subtitle">Showing {filtered.length} of {clubs.length} clubs</p>
-          )}
+          <span className="explore-count">
+            {filtersActive ? `${filtered.length} of ${clubs.length}` : clubs.length} club{clubs.length !== 1 ? 's' : ''}
+          </span>
         </div>
         <Link to="/clubs/new" className="btn btn-primary">+ Create Club</Link>
       </div>
@@ -66,14 +80,23 @@ export default function ExploreClubs() {
       {/* Search bar */}
       <div className="explore-search-row">
         <div className="explore-search-wrap">
-          <span className="explore-search-icon">🔍</span>
+          <svg className="explore-search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
           <input
+            ref={searchRef}
             className="explore-search-input"
             type="text"
             placeholder="Search clubs by name…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setSearchFocused(false)}
           />
+          {!search && !searchFocused && (
+            <kbd className="explore-search-hint">/</kbd>
+          )}
           {search && (
             <button className="explore-search-clear" onClick={() => setSearch('')} aria-label="Clear search">×</button>
           )}
